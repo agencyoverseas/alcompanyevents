@@ -309,3 +309,55 @@ html[data-scene="ready"] .scene-loader {
     animation: none !important;
   }
 }
+
+/* ================= Réalisations : galerie immersive =================
+   Animations liées au scroll en CSS pur (view timeline) : zéro JS, mobile
+   compris. Sans support (Firefox), la galerie reste statique et lisible. */
+@keyframes grow-frame {
+  from {
+    transform: scale(0.84);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes settle-photo {
+  from {
+    transform: scale(1.18);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .immersive-item {
+      view-timeline-name: --item;
+    }
+    .immersive-frame {
+      animation: grow-frame linear both;
+      animation-timeline: --item;
+      animation-range: entry 0% cover 45%;
+    }
+    .immersive-photo {
+      animation: settle-photo linear both;
+      animation-timeline: --item;
+      animation-range: entry 0% cover 50%;
+    }
+    .immersive-caption {
+      animation: caption-in linear both;
+      animation-timeline: --item;
+      animation-range: entry 55% cover 45%;
+    }
+  }
+}
