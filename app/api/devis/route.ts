@@ -20,6 +20,7 @@ function normalize(input: Record<string, unknown>): DevisPayload | string {
     invites: clip(input.invites, 10) || undefined,
     budget: clip(input.budget, 60) || undefined,
     lieu: clip(input.lieu) || undefined,
+    ambiance: clip(input.ambiance) || undefined,
     message: clip(input.message, MAX) || undefined,
     formule: clip(input.formule, 60) || undefined,
   };
@@ -67,7 +68,7 @@ export async function POST(req: Request) {
   const result = await forward(payload);
   if (!isJson) {
     // Envoi sans JS : retour sur le formulaire.
-    const to = new URL(result.ok ? "/?devis=ok#devis" : "/?devis=erreur#devis", req.url);
+    const to = new URL(result.ok ? "/devis?devis=ok" : "/devis?devis=erreur", req.url);
     return NextResponse.redirect(to, 303);
   }
   return result.ok

@@ -17,15 +17,22 @@ npm run build && npm start
 
 ## Ce qui est livré
 
-- **Accueil** : héro WebGL (personnage déplacé par carte de profondeur, 8 ballons procéduraux,
-  ficelles, caméra pilotée par le scroll et la souris), pin GSAP sur trois hauteurs d'écran,
-  loader avec rideau ; univers en cartes inclinables ; réalisations en scroll horizontal ;
-  déroulé ; avis ; bandeau clients ; formulaire de devis.
-- **Formules** : 4 familles × 3 paliers, modale de détail, comparatif à colonne figée,
-  mariage à part, compléments, services, mini-concepts.
-- **Réalisations** : carrousel en anneau (scroll, glissement, boutons clavier), galerie
-  immersive filtrable.
-- Transition « ballon » entre pages, curseur personnalisé, son (coupé par défaut).
+Style : maquette « ciel & terracotta » (Fraunces + Inter, boutons pilule, grandes cartes arrondies),
+avec la scène 3D d'Audrey dans la carte bleue du héro.
+
+| Page | Contenu |
+|---|---|
+| `/` | Héro 3D (pin, ballons qui s'envolent) → réalisations (rail horizontal) → formules (4 familles, 3 niveaux en fenêtre) → CTA → comment ça se passe → avis → références → Audrey → CTA |
+| `/formules` | Familles en 3 paliers, comparatif, mariage, mini-concepts |
+| `/prestations` | Événements privés / pros / scénographie, **bars gourmands** (gaufres-pancakes, pop-corn, barbe à papa, sweet table), **services complémentaires**, références |
+| `/realisations` | Anneau 3D + galerie filtrable par catégorie (anniversaires, baptêmes / religieux, pros, scénographies / photocalls, clé en main, mariages) |
+| `/comment-ca-se-passe` | Les 4 étapes, textes de la cliente |
+| `/faq`, `/a-propos`, `/journal` | FAQ (JSON-LD FAQPage), À propos (faits validés), Journal (vide) |
+| `/mariage`, `/anniversaire-enfant` | Pages de référencement local |
+| `/devis` | Formulaire « Parlons de votre projet » (pré-remplissable) |
+
+« Parlons de votre projet » / « Je demande mon devis » : header, héro, après les formules,
+après les réalisations, en fin de chaque page, footer.
 
 ## Règles d'architecture
 
@@ -47,16 +54,20 @@ npm run build && npm start
 
 Tout est isolé dans `content/` et signalé par `⚠️` dans le code.
 
-- **Assets** : `public/scene/*` sont des placeholders (voir `public/scene/README.md`).
+- **Logo** : non fourni, marque typographique en attendant (`components/layout/Logo.tsx`).
+- **Mascotte** : intégrée (version sans ballons générée pour la 3D, voir `public/scene/README.md`).
+- **Photos HD et vidéos** des réalisations ; **photos des bars gourmands** ; **logos clients** ;
+  **portrait d'Audrey** ; **prix du bar à gaufres / pancakes**.
+- **Textes de la maquette non validés** (non affichés) : « +120 événements », avis, histoire 2020,
+  délais, horaires, email, FAQ d'origine. Acompte : 50 % (mail de la cliente), pas 30 %.
+- **Mentions légales / confidentialité** : à rédiger (SIRET, hébergeur, RGPD).
 - **Prix** (`content/formules.ts`, `content/univers.ts`) : non validés.
 - **Email** et **nombre d'événements** (`content/site.ts`) : `null`, non affichés tant que non validés.
-- **Avis clients** (`content/avis.ts`) : emplacements, aucun avis n'a été fourni.
+- **Avis clients** (`content/avis.ts`) : liste vide (prénom, type d'événement, texte, photo).
 - **Communes** des réalisations (`content/realisations.ts`) : non fournies, « Guadeloupe » affiché
   par défaut. À compléter pour le référencement local.
 - **Classement** des photos « arbre de Noël » (entreprise) et « autre / prestations »
   (scénographie) : déduit des noms de fichiers.
-- **Logos clients** : affichés en texte (aucun fichier logo fourni).
-- **Mariage** : traité en section dédiée sur /formules (le périmètre est de 3 pages).
 
 ## Formulaire de devis
 
@@ -64,7 +75,7 @@ Tout est isolé dans `content/` et signalé par `⚠️` dans le code.
 (ex. n8n : email à Audrey + ligne dans une base). Sans webhook, réponse 503 et le formulaire
 propose WhatsApp. L'envoi fonctionne aussi sans JavaScript (POST natif puis redirection) ; dans
 ce cas la case « pas de date » ne libère pas le champ date (il faut JS pour ça).
-Pré-remplissage : `/?type=Anniversaire%20enfant&formule=Signature#devis`.
+Pré-remplissage : `/devis?type=Anniversaire%20enfant&formule=Signature`.
 
 ## Déploiement Vercel
 

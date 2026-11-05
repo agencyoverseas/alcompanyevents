@@ -1,19 +1,12 @@
 import { ArrowRight, Heart } from "lucide-react";
-import {
-  ACOMPTE_PERCENT,
-  complements,
-  families,
-  formatPrice,
-  mariage,
-  miniConcepts,
-  services,
-} from "@/content/formules";
+import { ACOMPTE_PERCENT, families, formatPrice, mariage, miniConcepts } from "@/content/formules";
 import { devisHref } from "@/content/devis";
 import { realisations } from "@/content/realisations";
 import { FamilyCard } from "@/components/formules/FamilyCard";
 import { CompareTable } from "@/components/formules/CompareTable";
 import { OptionCard } from "@/components/formules/OptionCard";
 import { ButtonLink } from "@/components/ui/Button";
+import { CtaBand } from "@/components/ui/CtaBand";
 import { Container, Eyebrow, Section } from "@/components/ui/Section";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
@@ -22,7 +15,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Formules et tarifs",
   description:
-    "Formules Essentiel, Signature et Prestige pour anniversaires, baptêmes et événements d'entreprise en Guadeloupe. Mariages sur devis. Prix à partir de 590 €.",
+    "Formules Essentiel, Signature et Prestige pour anniversaires, baptêmes et événements professionnels en Guadeloupe. Mariages sur devis. Prix à partir de 590 €.",
   path: "/formules",
 });
 
@@ -31,30 +24,25 @@ const mariagePhoto = realisations.find((r) => r.id === "mariage-st")!;
 export default function FormulesPage() {
   return (
     <>
-      {/* En-tête */}
-      <section className="relative overflow-hidden pb-10 pt-32 sm:pt-40">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-40 -top-40 size-[34rem] rounded-full [background:radial-gradient(circle,rgba(201,162,91,.16),transparent_65%)]"
-        />
+      <section className="pb-6 pt-28 sm:pt-32">
         <Container>
           <Reveal className="max-w-3xl">
             <Eyebrow>Formules & tarifs</Eyebrow>
-            <h1 className="h1-display mt-5 text-light">
-              Trois paliers, <span className="text-gold-gradient">un seul interlocuteur</span>
+            <h1 className="h1-display text-ink">
+              Choisissez votre univers, <span className="text-terra-d">puis votre niveau</span>
             </h1>
-            <p className="mt-6 max-w-xl text-muted-d">
-              Choisissez votre type d&apos;événement puis le niveau d&apos;accompagnement. Tous les prix sont « à partir
-              de » : le devis final dépend du nombre d&apos;invités, du lieu et des options.
+            <p className="mt-5 max-w-[60ch] text-[1.05rem] text-muted">
+              Tous les tarifs sont indiqués « à partir de » et dépendent du nombre d&apos;invités, du lieu et des
+              options. Le mariage se traite sur devis, chaque projet étant unique.
             </p>
           </Reveal>
-          <nav aria-label="Familles de formules" className="mt-10">
+          <nav aria-label="Familles de formules" className="mt-8">
             <ul className="flex flex-wrap gap-2">
               {[...families.map((f) => ({ id: f.id, name: f.name })), { id: "mariage", name: "Mariage" }].map((f) => (
                 <li key={f.id}>
                   <a
                     href={`#${f.id}`}
-                    className="btn-label inline-flex h-10 items-center rounded-[10px] border border-night-3 px-4 text-light/85 transition-colors hover:border-gold/60 hover:text-gold-l"
+                    className="inline-flex h-10 items-center rounded-full border border-sky-200 bg-white px-4 text-[0.82rem] font-medium text-ink transition-colors hover:bg-sky-50"
                   >
                     {f.name}
                   </a>
@@ -65,54 +53,56 @@ export default function FormulesPage() {
         </Container>
       </section>
 
-      {/* Familles */}
-      <section aria-label="Formules par type d'événement" className="py-10 sm:py-16">
-        <Container className="space-y-16 sm:space-y-20">
+      <section aria-label="Formules par type d'événement" className="py-10 sm:py-14">
+        <Container className="space-y-14 sm:space-y-16">
           {families.map((f) => (
             <FamilyCard key={f.id} family={f} />
           ))}
         </Container>
       </section>
 
-      {/* Comparatif */}
+      <CtaBand title="Vous hésitez entre deux niveaux ?" text="Décrivez votre événement, on vous oriente vers la formule la plus juste." />
+
       <Section
         id="comparatif"
         eyebrow="Comparatif"
-        title={<span id="compare-title">Ce que comprend chaque palier</span>}
-        intro={`Chaque palier reprend le précédent. Acompte de ${ACOMPTE_PERCENT} % à la réservation.`}
+        title={<span id="compare-title">Ce que contient chaque niveau</span>}
+        intro={`Chaque niveau reprend le précédent. Acompte de ${ACOMPTE_PERCENT} % à la réservation.`}
       >
         <Reveal>
           <CompareTable />
         </Reveal>
       </Section>
 
-      {/* Mariage, traité à part */}
-      <section id="mariage" aria-labelledby="mariage-title" className="scroll-mt-24 py-16 sm:py-24">
+      <section id="mariage" aria-labelledby="mariage-title" className="scroll-mt-24 py-12 sm:py-16">
         <Container>
-          <Reveal className="grid overflow-hidden rounded-[16px] border border-night-3 bg-night-2 md:grid-cols-[1fr_1.2fr]">
+          <Reveal className="grid overflow-hidden rounded-[34px] border border-line bg-white md:grid-cols-[1fr_1.2fr]">
             <Photo
               src={mariagePhoto.src}
               alt={mariagePhoto.alt}
               sizes="(max-width: 767px) 100vw, 45vw"
               cover
-              className="aspect-[4/3] md:aspect-auto md:min-h-[460px]"
+              className="aspect-[4/3] md:aspect-auto md:min-h-[440px]"
             />
-            <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-14">
+            <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
               <Eyebrow>
                 <Heart className="size-3.5" aria-hidden /> Mariage
               </Eyebrow>
-              <h2 id="mariage-title" className="h2-display mt-4 text-light">
-                Votre mariage, <em className="text-gold-l">sur mesure</em>
+              <h2 id="mariage-title" className="h2-display text-ink">
+                Votre mariage, <em>sur mesure</em>
               </h2>
-              <p className="mt-4 text-muted-d">{mariage.pitch}</p>
+              <p className="mt-4 text-muted">{mariage.pitch}</p>
               <p className="mt-6">
-                <span className="smallcaps block text-muted-d">À partir de</span>
-                <span className="font-display text-4xl text-gold-l">{formatPrice(mariage.priceFrom)}</span>
-                <span className="ml-2 text-sm text-muted-d">sur devis</span>
+                <span className="smallcaps mr-2 text-muted">à partir de</span>
+                <span className="font-display text-[2rem] font-black text-sky-800">{formatPrice(mariage.priceFrom)}</span>
+                <span className="ml-2 text-sm text-muted">sur devis</span>
               </p>
-              <div className="mt-8">
-                <ButtonLink href={devisHref(mariage.eventType)} size="lg">
-                  Parler de mon mariage <ArrowRight className="size-4" aria-hidden />
+              <div className="mt-7 flex flex-wrap gap-3">
+                <ButtonLink href={devisHref(mariage.eventType)} variant="terra">
+                  Demander mon devis mariage <ArrowRight className="size-4" aria-hidden />
+                </ButtonLink>
+                <ButtonLink href="/mariage" variant="outline">
+                  En savoir plus
                 </ButtonLink>
               </div>
             </div>
@@ -120,66 +110,27 @@ export default function FormulesPage() {
         </Container>
       </section>
 
-      {/* Options */}
-      <Section
-        id="options"
-        eyebrow="Pour compléter"
-        title={
-          <>
-            Compléments, services <em className="text-gold-l">& mini-concepts</em>
-          </>
-        }
-      >
-        <div className="grid gap-10 lg:grid-cols-3">
-          <Reveal>
-            <h3 className="font-display text-2xl text-light">Compléments</h3>
-            <p className="mt-1 text-sm text-muted-d">À ajouter à une formule, ne peuvent pas être réservés seuls.</p>
-            <ul className="mt-5 space-y-3">
-              {complements.map((o) => (
-                <OptionCard key={o.id} option={o} />
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <h3 className="font-display text-2xl text-light">Services complémentaires</h3>
-            <p className="mt-1 text-sm text-muted-d">Toujours en accompagnement d&apos;une formule.</p>
-            <ul className="mt-5 space-y-3">
-              {services.map((o) => (
-                <OptionCard key={o.id} option={o} />
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal delay={0.16}>
-            <h3 className="font-display text-2xl text-light">Mini-concepts</h3>
-            <p className="mt-1 text-sm text-muted-d">Des formats courts, à prix fixe.</p>
-            <ul className="mt-5 space-y-3">
-              {miniConcepts.map((o) => (
-                <OptionCard key={o.id} option={o} />
-              ))}
-            </ul>
-            <ButtonLink href={devisHref("Mini-concept")} variant="outline" className="mt-5 w-full">
-              Réserver un mini-concept
-            </ButtonLink>
-          </Reveal>
+      <Section tone="sand" id="mini-concepts" eyebrow="Petits formats" title="Nos mini-concepts">
+        <ul className="grid gap-3 md:grid-cols-3">
+          {miniConcepts.map((o) => (
+            <OptionCard key={o.id} option={o} />
+          ))}
+        </ul>
+        <div className="mt-8 flex flex-col gap-4 rounded-[20px] border border-line bg-white p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="font-display text-xl font-semibold text-ink">À ajouter à votre formule</h3>
+            <p className="mt-1 text-[0.9rem] text-muted">
+              Bars gourmands (gaufres, pop-corn, barbe à papa, sweet table) et services complémentaires (hôtesses,
+              traiteur, animation, DJ).
+            </p>
+          </div>
+          <ButtonLink href="/prestations" variant="outline">
+            Voir les prestations
+          </ButtonLink>
         </div>
       </Section>
 
-      {/* CTA */}
-      <section className="pb-24 pt-6">
-        <Container>
-          <Reveal className="flex flex-col items-start justify-between gap-6 rounded-[16px] border border-gold/30 bg-night-2 p-6 sm:p-10 md:flex-row md:items-center">
-            <div>
-              <h2 className="h2-display text-light">Pas sûr·e de la formule ?</h2>
-              <p className="mt-2 text-muted-d">
-                Décrivez votre événement, on vous oriente. Acompte de {ACOMPTE_PERCENT} % seulement à la réservation.
-              </p>
-            </div>
-            <ButtonLink href="/#devis" size="lg">
-              Demander un devis
-            </ButtonLink>
-          </Reveal>
-        </Container>
-      </section>
+      <CtaBand />
     </>
   );
 }

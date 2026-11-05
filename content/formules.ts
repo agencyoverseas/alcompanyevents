@@ -1,3 +1,4 @@
+import { photo } from "./site";
 import type { Price, Tier } from "./types";
 
 // ============================================================================
@@ -63,13 +64,16 @@ export type Family = {
   /** Valeur envoyée au formulaire de devis. */
   eventType: string;
   prices: Record<Tier, Price>;
+  photo: string;
+  alt: string;
+  tag?: string;
 };
 
 export const families: Family[] = [
-  { id: "anniversaire-enfant", name: "Anniversaire enfant", short: "Thèmes, ballons, sweet table : la fête dont ils se souviendront.", eventType: "Anniversaire enfant", prices: { essentiel: 590, signature: 890, prestige: 1490 } },
-  { id: "anniversaire-adulte", name: "Anniversaire adulte", short: "30, 40, 50 ans et plus : une soirée à la hauteur du cap.", eventType: "Anniversaire adulte", prices: { essentiel: 690, signature: 1190, prestige: 1890 } },
-  { id: "bapteme", name: "Baptême & autour de bébé", short: "Baptême, baby shower, gender reveal.", eventType: "Baptême / autour de bébé", prices: { essentiel: 590, signature: 990, prestige: 1590 } },
-  { id: "entreprise", name: "Entreprise", short: "CSE, arbres de Noël, séminaires, inaugurations.", eventType: "Entreprise", prices: { essentiel: 990, signature: 1790, prestige: null } },
+  { id: "anniversaire-enfant", name: "Anniversaire enfant", short: "Thèmes, ballons, sweet table : la fête dont ils se souviendront.", eventType: "Anniversaire enfant", prices: { essentiel: 590, signature: 890, prestige: 1490 }, photo: photo("anniversaire-thamura-min-400x516.jpg"), alt: "Décoration d'anniversaire enfant en Guadeloupe" },
+  { id: "anniversaire-adulte", name: "Anniversaire adulte", short: "30, 40, 50 ans et plus : une soirée à la hauteur du cap.", eventType: "Anniversaire adulte", prices: { essentiel: 690, signature: 1190, prestige: 1890 }, photo: photo("anniversaire-Joyce-min-400x516.jpg"), alt: "Décoration d'anniversaire adulte en Guadeloupe" },
+  { id: "bapteme", name: "Baptême & autour de bébé", short: "Baptême, baby shower, gender reveal.", eventType: "Baptême / autour de bébé", prices: { essentiel: 590, signature: 990, prestige: 1590 }, photo: photo("bapteme-yloann-3-min-400x516.jpg"), alt: "Décoration de baptême en Guadeloupe" },
+  { id: "entreprise", name: "Entreprise", short: "CSE, arbres de Noël, séminaires, inaugurations.", eventType: "Entreprise", prices: { essentiel: 990, signature: 1790, prestige: null }, photo: photo("arbre-de-noel-min-400x516.jpg"), alt: "Arbre de Noël d'entreprise décoré en Guadeloupe", tag: "Pro" },
 ];
 
 /** Prix le plus bas affiché sur le site (pour l'accroche « à partir de »). */
@@ -79,14 +83,26 @@ export const lowestPrice = Math.min(
 
 export type Option = { id: string; name: string; price: Price; note?: string };
 
-/** Compléments : ne peuvent pas être réservés seuls. */
-export const complements: Option[] = [
-  { id: "popcorn", name: "Bar à pop-corn", price: 190 },
-  { id: "barbe-a-papa", name: "Bar à barbe à papa", price: 220 },
-  { id: "sweet-table", name: "Sweet table", price: 290 },
+/**
+ * Bars personnalisés & animations gourmandes. Avec ou sans service.
+ * Prestations complémentaires : ne peuvent pas être réservées seules.
+ * ⚠️ Prix du bar à gaufres / pancakes non communiqué → « sur demande ».
+ * ⚠️ Photos de chaque bar à fournir par la cliente.
+ */
+export const complements: (Option & { text: string; photo?: string })[] = [
+  { id: "gaufres-pancakes", name: "Bar à gaufres / pancakes", price: null, text: "Gaufres et pancakes préparés sur place, garnitures au choix." },
+  { id: "popcorn", name: "Bar à pop-corn", price: 190, text: "Pop-corn sucré ou salé, présenté dans un décor assorti à votre thème." },
+  { id: "barbe-a-papa", name: "Bar à barbe à papa", price: 220, text: "La gourmandise préférée des enfants… et des grands." },
+  { id: "sweet-table", name: "Sweet table", price: 290, text: "Une table de douceurs mise en scène aux couleurs de votre événement." },
 ];
 
+export const COMPLEMENT_NOTE =
+  "Proposés avec ou sans service. Prestations complémentaires : elles ne peuvent pas être réservées seules.";
+
 /** Services complémentaires : jamais seuls. */
+export const SERVICES_NOTE =
+  "Ces services sont proposés en complément de nos prestations événementielles et ne peuvent pas être réservés seuls auprès d'AUDREY.L COMPANY.";
+
 export const services: Option[] = [
   { id: "hotesses", name: "Hôtesses d'accueil", price: 180 },
   { id: "traiteur", name: "Service traiteur", price: null },
@@ -118,5 +134,5 @@ export const compareRows: { label: string; tiers: Tier[] }[] = [
   ),
 ];
 
-export const formatPrice = (p: Price) =>
-  p === null ? "Sur devis" : `${new Intl.NumberFormat("fr-FR").format(p).replace(/ | /g, " ")} €`;
+export const formatPrice = (p: Price, onRequest = "Sur devis") =>
+  p === null ? onRequest : `${new Intl.NumberFormat("fr-FR").format(p).replace(/ | /g, " ")} €`;

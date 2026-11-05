@@ -1,79 +1,85 @@
-import { MapPin, MessageCircle, Phone } from "lucide-react";
+import { CTA } from "@/content/nav";
+import { families } from "@/content/formules";
 import { site, telHref } from "@/content/site";
+import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Section";
 import { Logo } from "./Logo";
-import { NAV_LINKS } from "@/content/nav";
 import { TransitionLink } from "./PageTransition";
+
+const link = "block py-[3px] text-muted-dark transition-colors hover:text-white";
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-night-3 bg-night pb-28 pt-16 sm:pb-16">
-      <Container className="grid gap-12 md:grid-cols-[1.3fr_1fr_1fr]">
-        <div>
-          <Logo height={46} />
-          <p className="mt-5 max-w-sm text-sm text-muted-d">
-            Décoration et organisation d&apos;événements clé en main en Guadeloupe, depuis juillet 2023.
-          </p>
-          <ul className="mt-5 space-y-1 text-sm text-muted-d">
-            {site.credentials.map((c) => (
-              <li key={c}>— {c}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h2 className="smallcaps text-gold-l">Contact</h2>
-          <ul className="mt-5 space-y-3 text-sm">
-            <li>
-              <a href={telHref} className="inline-flex items-center gap-2 text-light/85 hover:text-gold-l">
-                <Phone className="size-4" aria-hidden /> {site.phoneDisplay}
-              </a>
-            </li>
-            <li>
-              <a
-                href={site.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-light/85 hover:text-gold-l"
-              >
-                <MessageCircle className="size-4" aria-hidden /> WhatsApp
-                <span className="sr-only"> (nouvel onglet)</span>
-              </a>
-            </li>
-            {site.email && (
-              <li>
-                <a href={`mailto:${site.email}`} className="text-light/85 hover:text-gold-l">
-                  {site.email}
-                </a>
-              </li>
-            )}
-            <li className="flex items-start gap-2 text-muted-d">
-              <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />
-              {site.areaServed.join(" · ")}
-            </li>
-          </ul>
-        </div>
-
-        <nav aria-label="Pied de page">
-          <h2 className="smallcaps text-gold-l">Navigation</h2>
-          <ul className="mt-5 space-y-3 text-sm">
-            {NAV_LINKS.map((l) => (
-              <li key={l.href}>
-                <TransitionLink href={l.href} className="text-light/85 hover:text-gold-l">
-                  {l.label}
-                </TransitionLink>
-              </li>
-            ))}
-            <li>
-              <TransitionLink href="/#devis" className="text-light/85 hover:text-gold-l">
-                Demander un devis
+    <footer className="bg-ink pb-28 pt-[60px] text-[0.85rem] text-muted-dark sm:pb-8">
+      <Container>
+        <div className="mb-10 grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr]">
+          <div>
+            <Logo tone="light" />
+            <p className="mt-4">Célébrez, on s&apos;occupe du reste.</p>
+            <p className="mt-3 text-[0.8rem]">
+              Agence de décoration et d&apos;organisation événementielle — {site.areaServed.join(", ")}.
+            </p>
+            <ButtonLink href={CTA.href} variant="terra" size="sm" className="mt-5">
+              {CTA.main}
+            </ButtonLink>
+          </div>
+          <nav aria-label="Formules">
+            <h2 className="mb-3 font-display text-[0.95rem] font-semibold uppercase tracking-[0.08em] text-white">
+              Formules
+            </h2>
+            {families.map((f) => (
+              <TransitionLink key={f.id} href={`/formules#${f.id}`} className={link}>
+                {f.name}
               </TransitionLink>
-            </li>
-          </ul>
-        </nav>
-      </Container>
-      <Container className="mt-14 border-t border-night-3 pt-6 text-xs text-muted-d">
-        © {site.name} — Guadeloupe
+            ))}
+            <TransitionLink href="/mariage" className={link}>
+              Mariage
+            </TransitionLink>
+            <TransitionLink href="/anniversaire-enfant" className={link}>
+              Anniversaire enfant en Guadeloupe
+            </TransitionLink>
+          </nav>
+          <nav aria-label="L'agence">
+            <h2 className="mb-3 font-display text-[0.95rem] font-semibold uppercase tracking-[0.08em] text-white">
+              L&apos;agence
+            </h2>
+            {[
+              ["/prestations", "Prestations"],
+              ["/realisations", "Réalisations"],
+              ["/comment-ca-se-passe", "Comment ça se passe"],
+              ["/a-propos", "À propos"],
+              ["/faq", "FAQ"],
+              ["/journal", "Journal"],
+            ].map(([href, label]) => (
+              <TransitionLink key={href} href={href} className={link}>
+                {label}
+              </TransitionLink>
+            ))}
+          </nav>
+          <div>
+            <h2 className="mb-3 font-display text-[0.95rem] font-semibold uppercase tracking-[0.08em] text-white">
+              Contact
+            </h2>
+            <a href={telHref} className={link}>
+              {site.phoneDisplay}
+            </a>
+            {site.email && (
+              <a href={`mailto:${site.email}`} className={link}>
+                {site.email}
+              </a>
+            )}
+            <a href={site.whatsapp} target="_blank" rel="noopener noreferrer" className={link}>
+              WhatsApp<span className="sr-only"> (nouvel onglet)</span>
+            </a>
+            <TransitionLink href={CTA.href} className={link}>
+              {CTA.devis}
+            </TransitionLink>
+          </div>
+        </div>
+        <div className="flex flex-wrap justify-between gap-3 border-t border-[#24404F] pt-5 text-[0.76rem]">
+          <span>© {site.name} — Guadeloupe</span>
+          {/* ⚠️ Mentions légales et politique de confidentialité à rédiger (SIRET, hébergeur, RGPD). */}
+        </div>
       </Container>
     </footer>
   );

@@ -28,6 +28,7 @@ export type DevisPayload = {
   invites?: string;
   budget?: string;
   lieu?: string;
+  ambiance?: string;
   message?: string;
   formule?: string;
 };
@@ -36,5 +37,5 @@ export type DevisPayload = {
 export const devisHref = (type: string, formule?: string) => {
   const q = new URLSearchParams({ type });
   if (formule) q.set("formule", formule);
-  return `/?${q.toString()}#devis`;
+  return `/devis?${q.toString()}`;
 };

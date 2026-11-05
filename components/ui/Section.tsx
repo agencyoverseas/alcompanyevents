@@ -3,17 +3,21 @@ import { cn } from "@/lib/utils";
 import { Reveal } from "./Reveal";
 
 export function Container({ className, ...props }: ComponentProps<"div">) {
-  return <div className={cn("mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-10", className)} {...props} />;
+  return <div className={cn("mx-auto w-full max-w-[1180px] px-4 sm:px-[22px]", className)} {...props} />;
 }
 
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <p className={cn("smallcaps flex items-center gap-3 text-gold-l", className)}>
-      <span aria-hidden className="h-px w-8 bg-gold" />
-      {children}
-    </p>
-  );
+  return <p className={cn("smallcaps mb-3 flex items-center gap-2 text-terra-d", className)}>{children}</p>;
 }
+
+type Tone = "paper" | "sand" | "dark" | "sky";
+
+const toneClass: Record<Tone, string> = {
+  paper: "bg-paper",
+  sand: "bg-sand",
+  sky: "bg-sky-50",
+  dark: "bg-ink text-[#EAF2F8] [--accent:var(--terra-soft)]",
+};
 
 export function Section({
   id,
@@ -23,21 +27,24 @@ export function Section({
   children,
   className,
   headClassName,
+  tone = "paper",
   ...props
 }: Omit<ComponentProps<"section">, "title"> & {
   eyebrow?: string;
   title?: ReactNode;
   intro?: ReactNode;
   headClassName?: string;
+  tone?: Tone;
 }) {
+  const dark = tone === "dark";
   return (
-    <section id={id} className={cn("relative py-20 sm:py-28", className)} {...props}>
+    <section id={id} className={cn("relative scroll-mt-24 py-14 sm:py-[76px]", toneClass[tone], className)} {...props}>
       <Container>
         {(eyebrow || title) && (
-          <Reveal className={cn("mb-10 max-w-2xl sm:mb-14", headClassName)}>
-            {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-            {title && <h2 className="h2-display mt-4 text-light">{title}</h2>}
-            {intro && <p className="mt-4 text-muted-d">{intro}</p>}
+          <Reveal className={cn("mb-8 max-w-[64ch] sm:mb-[34px]", headClassName)}>
+            {eyebrow && <Eyebrow className={dark ? "text-terra-soft" : undefined}>{eyebrow}</Eyebrow>}
+            {title && <h2 className={cn("h2-display", dark ? "text-white" : "text-ink")}>{title}</h2>}
+            {intro && <p className={cn("mt-4 text-[1.05rem]", dark ? "text-muted-dark" : "text-muted")}>{intro}</p>}
           </Reveal>
         )}
         {children}

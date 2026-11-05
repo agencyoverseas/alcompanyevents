@@ -1,46 +1,56 @@
 import { Star } from "lucide-react";
+import Image from "next/image";
 import { avis } from "@/content/avis";
-import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
 import { Stagger, StaggerItem } from "@/components/ui/Stagger";
 import { cn } from "@/lib/utils";
 
-export function Avis() {
+/** « Ils parlent de leur expérience » : prénom, type d'événement, photo de la réalisation. */
+export function Avis({ tone = "sand" }: { tone?: "sand" | "paper" }) {
   return (
     <Section
       id="avis"
+      tone={tone}
       eyebrow="Avis clients"
       title={
         <>
-          Elles en <em className="text-gold-l">parlent mieux</em> que nous
+          Ils parlent de <em>leur expérience</em>
         </>
       }
     >
-      <Stagger className="grid gap-4 md:grid-cols-3 md:gap-6">
-        {avis.map((a) => (
-          <StaggerItem key={a.id}>
-            <Card className="flex h-full flex-col p-6 sm:p-8">
-              <div className="flex gap-1 text-gold" role="img" aria-label={`${a.rating} étoiles sur 5`}>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <Star key={i} className={cn("size-4", i < a.rating ? "fill-gold" : "opacity-30")} aria-hidden />
-                ))}
-              </div>
-              <blockquote
-                className={cn(
-                  "mt-5 flex-1 font-display text-2xl leading-snug",
-                  a.placeholder ? "italic text-muted-d" : "text-light",
+      {avis.length === 0 ? (
+        // ⚠️ Aucun avis fourni : emplacement neutre, aucun témoignage inventé.
+        <p className="max-w-xl rounded-[20px] border border-dashed border-sky-200 bg-white/60 p-6 text-muted">
+          Les premiers témoignages de nos clientes arrivent bientôt sur cette page.
+        </p>
+      ) : (
+        <Stagger className="grid gap-[18px] md:grid-cols-3">
+          {avis.map((a) => (
+            <StaggerItem key={a.id}>
+              <figure className="flex h-full flex-col overflow-hidden rounded-[20px] border border-line bg-white">
+                {a.photo && (
+                  <div className="relative aspect-[4/3]">
+                    <Image src={a.photo} alt={a.photoAlt ?? ""} fill sizes="(max-width: 767px) 92vw, 360px" className="object-cover" />
+                  </div>
                 )}
-              >
-                « {a.quote} »
-              </blockquote>
-              <p className="mt-6 text-sm">
-                <span className="font-semibold text-light">{a.author}</span>
-                <span className="text-muted-d"> — {a.event}</span>
-              </p>
-            </Card>
-          </StaggerItem>
-        ))}
-      </Stagger>
+                <div className="flex flex-1 flex-col p-6">
+                  {a.rating && (
+                    <div className="flex gap-1 text-terra" role="img" aria-label={`${a.rating} étoiles sur 5`}>
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <Star key={i} className={cn("size-4", i < (a.rating ?? 0) ? "fill-terra" : "opacity-30")} aria-hidden />
+                      ))}
+                    </div>
+                  )}
+                  <blockquote className="mt-3 flex-1 font-display text-[1.05rem] font-light text-ink">« {a.quote} »</blockquote>
+                  <figcaption className="mt-4 text-[0.8rem] text-muted">
+                    <b className="font-semibold text-ink">{a.prenom}</b> — {a.event}
+                  </figcaption>
+                </div>
+              </figure>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      )}
     </Section>
   );
 }

@@ -1,4 +1,5 @@
-export type UniversId = "mariage" | "bapteme" | "anniversaire" | "entreprise" | "scenographie";
+/** Catégories de la galerie (liste de la cliente + mariage, conservé). */
+export type UniversId = "anniversaire" | "bapteme" | "professionnel" | "scenographie" | "cle-en-main" | "mariage";
 
 export type Realisation = {
   id: string;
@@ -8,6 +9,8 @@ export type Realisation = {
   univers: UniversId;
   src: string;
   alt: string;
+  /** Vidéo de la réalisation (MP4 court et compressé). Aucune fournie pour l'instant. */
+  video?: { src: string; poster: string };
 };
 
 export type Tier = "essentiel" | "signature" | "prestige";

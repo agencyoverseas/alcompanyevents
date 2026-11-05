@@ -25,7 +25,7 @@ export const CHARACTER = {
   height: 2.3,
   y: -0.42,
   /** Décalage horizontal en fraction de la largeur visible. */
-  xFactor: 0.23,
+  xFactor: 0.27,
   /** < 0.35 impératif (cheveux sombres qui se creusent au-delà). */
   displacementScale: 0.22,
   /** Flou appliqué à la carte de profondeur (fraction de sa largeur) : adoucit la

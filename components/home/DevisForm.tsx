@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 type Status = "idle" | "sending" | "sent" | "error";
 
 const field =
-  "w-full rounded-[10px] border border-night-3 bg-night px-4 py-3 text-[0.95rem] text-light placeholder:text-muted-d/70 transition-colors focus:border-gold-l focus:outline-none focus-visible:outline-2 focus-visible:outline-gold-l disabled:opacity-40";
+  "w-full rounded-[12px] border border-sky-200 bg-white px-[14px] py-3 text-[0.92rem] text-text placeholder:text-muted transition-colors focus:border-transparent focus:outline-2 focus:outline-offset-1 focus:outline-sky-400 disabled:bg-sky-50 disabled:opacity-60";
 
 function Field({
   label,
@@ -31,15 +31,15 @@ function Field({
 }) {
   return (
     <div className={className}>
-      <label htmlFor={htmlFor} className="smallcaps mb-2 block text-muted-d">
+      <label htmlFor={htmlFor} className="mb-1.5 block text-[0.78rem] font-medium tracking-[0.02em] text-ink">
         {label}
         {required ? (
-          <span className="text-gold-l" aria-hidden>
+          <span className="text-terra-d" aria-hidden>
             {" "}
             *
           </span>
         ) : (
-          <span className="normal-case tracking-normal"> (facultatif)</span>
+          <span className="font-normal text-muted"> — facultatif</span>
         )}
       </label>
       {children}
@@ -101,6 +101,7 @@ function DevisFormInner({ prefill }: { prefill: Prefill }) {
       invites: String(fd.get("invites") ?? "") || undefined,
       budget: String(fd.get("budget") ?? "") || undefined,
       lieu: String(fd.get("lieu") ?? "").trim() || undefined,
+      ambiance: String(fd.get("ambiance") ?? "").trim() || undefined,
       message: String(fd.get("message") ?? "").trim() || undefined,
       formule: formule || undefined,
     };
@@ -125,19 +126,15 @@ function DevisFormInner({ prefill }: { prefill: Prefill }) {
   );
 
   return (
-    <section id="devis" aria-labelledby="devis-title" className="relative scroll-mt-24 py-20 sm:py-28">
+    <section id="devis" aria-labelledby="devis-title" className="relative scroll-mt-24 pb-16 pt-28 sm:pb-24 sm:pt-32">
       <Container>
-        <div className="relative overflow-hidden rounded-[16px] border border-night-3 bg-night-2 p-5 sm:p-10 lg:p-14">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full [background:radial-gradient(circle,rgba(201,162,91,.18),transparent_65%)]"
-          />
+        <div className="relative mx-auto max-w-[860px]">
           <Reveal className="relative max-w-2xl">
             <Eyebrow>Demande de devis</Eyebrow>
-            <h2 id="devis-title" className="h2-display mt-4 text-light">
-              Parlez-nous de <em className="text-gold-l">votre événement</em>
-            </h2>
-            <p className="mt-4 text-muted-d">
+            <h1 id="devis-title" className="h2-display text-ink">
+              Parlons de <em>votre projet</em>
+            </h1>
+            <p className="mt-4 text-[1.05rem] text-muted">
               Quelques infos suffisent pour un premier devis. Pas encore de date ? Cochez la case : on vous aide à y
               voir clair.
             </p>
@@ -152,12 +149,12 @@ function DevisFormInner({ prefill }: { prefill: Prefill }) {
                 animate="show"
                 exit="hidden"
                 role="status"
-                className="relative mt-10 flex items-start gap-4 rounded-[10px] border border-gold/40 bg-night p-6"
+                className="relative mt-10 flex items-start gap-4 rounded-[20px] border border-sky-400 bg-sky-50 p-6"
               >
-                <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-gold-l" aria-hidden />
+                <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-terra-d" aria-hidden />
                 <div>
-                  <p className="font-display text-2xl text-light">Merci, votre demande est bien partie.</p>
-                  <p className="mt-1 text-muted-d">Audrey revient vers vous très vite, par téléphone ou par email.</p>
+                  <p className="font-display text-2xl font-semibold text-ink">Merci, votre demande est bien partie.</p>
+                  <p className="mt-1 text-muted">Audrey revient vers vous très vite, par téléphone ou par email.</p>
                 </div>
               </m.div>
             ) : (
@@ -170,7 +167,7 @@ function DevisFormInner({ prefill }: { prefill: Prefill }) {
                 action="/api/devis"
                 method="post"
                 onSubmit={onSubmit}
-                className="relative mt-10 grid gap-5 md:grid-cols-6"
+                className="relative mt-8 grid gap-4 md:grid-cols-6"
                 noValidate={false}
               >
                 <input type="hidden" name="formule" value={formule} />
@@ -229,13 +226,13 @@ function DevisFormInner({ prefill }: { prefill: Prefill }) {
                     disabled={noDate}
                     className={cn(field, "[color-scheme:dark]")}
                   />
-                  <label className="mt-3 flex cursor-pointer items-center gap-2.5 text-sm text-light/85">
+                  <label className="mt-3 flex cursor-pointer items-center gap-2.5 text-sm text-text/85">
                     <input
                       type="checkbox"
                       name="sansDate"
                       checked={noDate}
                       onChange={(e) => setNoDate(e.target.checked)}
-                      className="size-4 accent-[#C9A25B]"
+                      className="size-4 accent-[#A7522F]"
                     />
                     Je n&apos;ai pas encore de date
                   </label>
@@ -271,21 +268,35 @@ function DevisFormInner({ prefill }: { prefill: Prefill }) {
                   />
                 </Field>
 
-                <Field label="Message" htmlFor={`${id}-message`} className="md:col-span-6">
+                <Field label="Ambiance souhaitée" htmlFor={`${id}-ambiance`} className="md:col-span-6">
+                  <input
+                    id={`${id}-ambiance`}
+                    name="ambiance"
+                    placeholder="Chic, bohème, tropicale, pastel… et vos couleurs"
+                    className={field}
+                  />
+                </Field>
+
+                <Field label="Vos envies" htmlFor={`${id}-message`} className="md:col-span-6">
                   <textarea
                     id={`${id}-message`}
                     name="message"
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Thème, couleurs, envies…"
+                    placeholder="Thème, contraintes, ce qui compte pour vous…"
                     className={cn(field, "resize-y")}
                   />
                 </Field>
 
+                <label className="flex items-start gap-2.5 text-[0.82rem] text-muted md:col-span-6">
+                  <input type="checkbox" name="consent" required className="mt-0.5 size-4 shrink-0 accent-[#A7522F]" />
+                  J&apos;accepte d&apos;être recontacté·e au sujet de ma demande.
+                </label>
+
                 <div className="flex flex-col gap-4 md:col-span-6 md:flex-row md:items-center md:justify-between">
-                  <p className="text-xs text-muted-d">
-                    <span className="text-gold-l">*</span> Champs obligatoires. Vos informations servent uniquement à
+                  <p className="text-xs text-muted">
+                    <span className="text-terra-d">*</span> Champs obligatoires. Vos informations servent uniquement à
                     vous répondre.
                   </p>
                   <Button type="submit" size="lg" disabled={status === "sending"} className="md:min-w-64">
@@ -294,20 +305,20 @@ function DevisFormInner({ prefill }: { prefill: Prefill }) {
                         <Loader2 className="size-4 animate-spin" aria-hidden /> Envoi…
                       </>
                     ) : (
-                      "Envoyer ma demande"
+                      "Je demande mon devis"
                     )}
                   </Button>
                 </div>
 
                 <div aria-live="polite" className="md:col-span-6">
                   {status === "error" && (
-                    <div className="flex flex-col gap-3 rounded-[10px] border border-terracotta/60 bg-night p-4 text-sm text-light sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-col gap-3 rounded-[20px] border border-terra/60 bg-white p-4 text-sm text-text sm:flex-row sm:items-center sm:justify-between">
                       <p>{errorMsg} Écrivez-nous directement sur WhatsApp, on vous répond vite.</p>
                       <a
                         href={`${site.whatsapp}?text=${whatsappText}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-label inline-flex shrink-0 items-center gap-2 text-gold-l hover:underline"
+                        className="btn-label inline-flex shrink-0 items-center gap-2 text-terra-d hover:underline"
                       >
                         <MessageCircle className="size-4" aria-hidden /> WhatsApp
                         <span className="sr-only"> (nouvel onglet)</span>

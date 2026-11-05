@@ -5,32 +5,29 @@ import { NAV_LINKS } from "@/content/nav";
 import { cn } from "@/lib/utils";
 import { TransitionLink } from "./PageTransition";
 
-
 export function Nav({
   className,
   linkClassName,
+  activeClassName,
   onNavigate,
 }: {
   className?: string;
   linkClassName?: string;
+  activeClassName?: string;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
   return (
     <ul className={className}>
       {NAV_LINKS.map((l) => {
-        const active = pathname === l.href;
+        const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
         return (
           <li key={l.href}>
             <TransitionLink
               href={l.href}
               aria-current={active ? "page" : undefined}
               onClick={onNavigate}
-              className={cn(
-                "relative transition-colors hover:text-gold-l",
-                active ? "text-gold-l" : "text-light/80",
-                linkClassName,
-              )}
+              className={cn(linkClassName, active && activeClassName)}
             >
               {l.label}
             </TransitionLink>

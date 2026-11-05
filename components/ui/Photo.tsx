@@ -24,13 +24,13 @@ export function Photo({
 }) {
   if (!cover) {
     return (
-      <div className={cn("relative overflow-hidden bg-night-2", className)}>
+      <div className={cn("relative overflow-hidden bg-surface", className)}>
         <Image src={src} alt={alt} fill sizes={sizes} className={cn("object-cover", imgClassName)} />
       </div>
     );
   }
   return (
-    <div className={cn("relative grid place-items-center overflow-hidden bg-night-2", className)}>
+    <div className={cn("relative grid place-items-center overflow-hidden bg-surface", className)}>
       <Image
         src={src}
         alt=""

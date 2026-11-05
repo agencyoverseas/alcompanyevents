@@ -11,7 +11,7 @@ export function WhatsAppFab() {
         href={`${site.whatsapp}?text=${encodeURIComponent("Bonjour Audrey, je souhaite un devis pour un événement.")}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-label flex h-12 min-w-12 items-center justify-center gap-2 rounded-full bg-[#17703d] px-3.5 sm:px-5 text-white shadow-[0_10px_30px_-10px_rgba(0,0,0,.6)] transition-transform hover:-translate-y-0.5"
+        className="btn-label flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-[#17703d] px-4 shadow-[0_8px_22px_rgba(0,0,0,.2)] sm:px-5 text-white shadow-[0_10px_30px_-10px_rgba(0,0,0,.6)] transition-transform hover:-translate-y-0.5"
       >
         <MessageCircle className="size-4" aria-hidden />
         <span className="sr-only sm:not-sr-only">WhatsApp</span>

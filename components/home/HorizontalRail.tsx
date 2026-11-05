@@ -31,20 +31,20 @@ export function HorizontalRail() {
       ref={sectionRef}
       aria-labelledby="rail-title"
       className={cn(
-        "relative overflow-hidden bg-night-2/40 py-20 sm:py-24",
+        "relative overflow-hidden bg-sand py-14 sm:py-[76px]",
         canPin && "md:flex md:h-[100svh] md:flex-col md:justify-center md:py-0",
       )}
     >
       <Container className="mb-8 flex flex-col gap-5 sm:mb-10 md:flex-row md:items-end md:justify-between">
         <Reveal>
           <Eyebrow>Réalisations</Eyebrow>
-          <h2 id="rail-title" className="h2-display mt-4 max-w-xl text-light">
-            Ils nous ont confié <em className="text-gold-l">leur fête</em>
+          <h2 id="rail-title" className="h2-display max-w-xl text-ink">
+            Des fêtes qu&apos;on <em>n&apos;oublie pas</em>
           </h2>
         </Reveal>
         <TransitionLink
           href="/realisations"
-          className="btn-label inline-flex items-center gap-2 text-gold-l hover:underline hover:underline-offset-4"
+          className="btn-label inline-flex items-center gap-2 text-terra-d hover:underline hover:underline-offset-4"
         >
           Toutes nos réalisations <ArrowRight className="size-4" aria-hidden />
         </TransitionLink>
@@ -60,27 +60,27 @@ export function HorizontalRail() {
       >
         <ul
           ref={trackRef}
-          className="flex w-max gap-4 px-4 sm:px-6 md:gap-6 lg:px-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]"
+          className="flex w-max gap-4 px-4 sm:px-6 md:gap-6 lg:px-[max(22px,calc((100vw-1180px)/2+22px))]"
         >
           {featuredRealisations.map((r, i) => (
             <li key={r.id} className="snap-start scroll-ml-4">
-              <TransitionLink href="/realisations" data-cursor="view" className="group block rounded-[10px]">
+              <TransitionLink href="/realisations" data-cursor="view" className="group block rounded-[20px]">
                 <figure>
                   <Photo
                     src={r.src}
                     alt={r.alt}
                     sizes="(max-width: 767px) 72vw, 340px"
-                    className="aspect-[400/516] w-[72vw] rounded-[10px] sm:w-[300px] md:w-[min(24vw,340px)]"
+                    className="aspect-[400/516] w-[72vw] rounded-[20px] sm:w-[300px] md:w-[min(24vw,340px)]"
                     imgClassName="transition-transform duration-700 group-hover:scale-[1.04]"
                   />
                   <figcaption className="mt-4 flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="font-display text-xl text-light">{r.title}</h3>
-                      <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-d">
+                      <h3 className="font-display text-xl font-semibold text-ink">{r.title}</h3>
+                      <p className="mt-1 flex items-center gap-1.5 text-sm text-muted">
                         <MapPin className="size-3.5" aria-hidden /> {placeLabel(r)}
                       </p>
                     </div>
-                    <span className="font-display text-lg text-gold-l" aria-hidden>
+                    <span className="font-display text-lg text-terra-d" aria-hidden>
                       {String(i + 1).padStart(2, "0")}
                     </span>
                   </figcaption>
@@ -91,11 +91,11 @@ export function HorizontalRail() {
           <li className="snap-start">
             <TransitionLink
               href="/realisations"
-              className="flex aspect-[400/516] w-[60vw] flex-col items-start justify-end rounded-[10px] border border-night-3 bg-night-2 p-6 transition-colors hover:border-gold sm:w-[260px] md:w-[min(20vw,280px)]"
+              className="flex aspect-[400/516] w-[60vw] flex-col items-start justify-end rounded-[20px] border border-line bg-white p-6 transition-colors hover:border-terra sm:w-[260px] md:w-[min(20vw,280px)]"
             >
-              <span className="smallcaps text-gold-l">Galerie complète</span>
-              <span className="mt-3 font-display text-3xl leading-tight text-light">Voir toutes nos réalisations</span>
-              <ArrowRight className="mt-6 size-5 text-gold-l" aria-hidden />
+              <span className="smallcaps text-terra-d">Galerie complète</span>
+              <span className="mt-3 font-display text-3xl font-semibold leading-tight text-ink">Voir toutes nos réalisations</span>
+              <ArrowRight className="mt-6 size-5 text-terra-d" aria-hidden />
             </TransitionLink>
           </li>
         </ul>

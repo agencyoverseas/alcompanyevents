@@ -50,7 +50,7 @@ const BALLOONS: Spec[] = [
 
 /** Décalage horizontal de la grappe : la main est à gauche du personnage,
  *  la grappe part vers l'extérieur pour ne pas couvrir le visage. */
-const CLUSTER_X = -0.32;
+const CLUSTER_X = -0.2;
 
 /** Compression verticale de la grappe (garde le haut sous le header). */
 const CLUSTER_Y = 0.62;

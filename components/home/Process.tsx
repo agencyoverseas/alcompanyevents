@@ -1,43 +1,37 @@
 "use client";
 
 import { m, useReducedMotion } from "motion/react";
-import { process } from "@/content/process";
+import { process, PROCESS_TITLE } from "@/content/process";
 import { Section } from "@/components/ui/Section";
 import { fadeUp, processStagger, reducedFade, viewportOnce } from "@/lib/motion";
 
-/** Déroulé en quatre étapes, révélées au scroll à 320 ms d'écart. */
-export function Process() {
+/** « Comment ça se passe ? » — 4 étapes, textes de la cliente, révélées à 320 ms d'écart. */
+export function Process({ eyebrow = "Comment ça se passe ?", tone = "paper" }: { eyebrow?: string; tone?: "paper" | "sand" }) {
   const reduced = useReducedMotion();
   const item = reduced ? reducedFade : fadeUp;
   return (
-    <Section
-      id="deroule"
-      eyebrow="Le déroulé"
-      title={
-        <>
-          De la première idée <em className="text-gold-l">au démontage</em>
-        </>
-      }
-    >
+    <Section id="deroule" tone={tone} eyebrow={eyebrow} title={PROCESS_TITLE}>
       <m.ol
         variants={processStagger}
         initial="hidden"
         whileInView="show"
         viewport={viewportOnce}
-        className="relative grid gap-10 md:grid-cols-4 md:gap-6"
+        className="relative grid gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-[2px]"
       >
-        {/* Pointillés reliant les étapes */}
-        <li
-          aria-hidden
-          className="pointer-events-none absolute left-[1.35rem] top-6 bottom-6 border-l border-dashed border-gold/50 md:left-6 md:right-6 md:top-[1.7rem] md:bottom-auto md:border-l-0 md:border-t"
-        />
-        {process.map((s) => (
-          <m.li key={s.n} variants={item} className="relative pl-14 md:pl-0">
-            <span className="absolute left-0 top-0 grid size-11 place-items-center rounded-full border border-gold/60 bg-night font-display text-xl text-gold-l md:static md:size-14 md:text-2xl">
-              {s.n}
-            </span>
-            <h3 className="font-display text-2xl text-light md:mt-6">{s.title}</h3>
-            <p className="mt-2 text-sm text-muted-d">{s.text}</p>
+        {process.map((s, i) => (
+          <m.li
+            key={s.n}
+            variants={item}
+            className="relative flex flex-col border border-line bg-white p-6 max-lg:rounded-[20px] lg:first:rounded-l-[20px] lg:last:rounded-r-[20px]"
+          >
+            <div className="flex items-center gap-3">
+              <span className="font-display text-[2.6rem] font-black leading-none text-terra-d">{s.n}</span>
+              {i < process.length - 1 && (
+                <span aria-hidden className="hidden h-px flex-1 border-t border-dashed border-terra/50 lg:block" />
+              )}
+            </div>
+            <h3 className="mt-4 font-display text-[1.18rem] font-semibold text-ink">{s.title}</h3>
+            <p className="mt-2 text-[0.88rem] leading-relaxed text-muted">{s.text}</p>
           </m.li>
         ))}
       </m.ol>

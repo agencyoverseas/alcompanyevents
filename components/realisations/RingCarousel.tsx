@@ -112,8 +112,8 @@ export default function RingCarousel({ items }: { items: Realisation[] }) {
               >
                 <Photo src={r.src} alt={r.alt} sizes={`${CARD_W}px`} className="h-full rounded-[10px]" />
                 <figcaption className="mt-3 text-center">
-                  <span className="block font-display text-lg leading-tight text-light">{r.title}</span>
-                  <span className="mt-0.5 inline-flex items-center gap-1 text-xs text-muted-d">
+                  <span className="block font-display text-lg leading-tight text-text">{r.title}</span>
+                  <span className="mt-0.5 inline-flex items-center gap-1 text-xs text-muted">
                     <MapPin className="size-3" aria-hidden /> {placeLabel(r)}
                   </span>
                 </figcaption>
@@ -127,16 +127,16 @@ export default function RingCarousel({ items }: { items: Realisation[] }) {
           type="button"
           onClick={() => api.current?.step(-1)}
           aria-label="Photo précédente"
-          className="grid size-11 place-items-center rounded-[10px] border border-night-3 text-light/80 hover:border-gold/60 hover:text-gold-l"
+          className="grid size-11 place-items-center rounded-[10px] border border-line text-text/80 hover:border-terra/60 hover:text-terra-d"
         >
           <ChevronLeft className="size-5" aria-hidden />
         </button>
-        <span className="smallcaps text-muted-d">Glissez ou défilez</span>
+        <span className="smallcaps text-muted">Glissez ou défilez</span>
         <button
           type="button"
           onClick={() => api.current?.step(1)}
           aria-label="Photo suivante"
-          className="grid size-11 place-items-center rounded-[10px] border border-night-3 text-light/80 hover:border-gold/60 hover:text-gold-l"
+          className="grid size-11 place-items-center rounded-[10px] border border-line text-text/80 hover:border-terra/60 hover:text-terra-d"
         >
           <ChevronRight className="size-5" aria-hidden />
         </button>

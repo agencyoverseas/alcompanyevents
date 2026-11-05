@@ -1,73 +1,91 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------
-   Tokens — direction "nuit & or". Valeurs vérifiées AA (voir brief §3).
-   Règle : jamais --gold en TEXTE sur fond clair → --gold-d.
-           Sur fond sombre, le texte doré est --gold-l.
+   Tokens — direction « ciel & terracotta » (maquette validée).
+   Contrastes vérifiés AA :
+   - texte terracotta et boutons terracotta : --terra-d (#A7522F, 5,3:1)
+     --terra (#C2643E) uniquement en décor (filets, puces, fonds larges) ;
+   - texte blanc sur le héro : dégradé #2C6A94 → #1E4A69 (≥ 5,8:1) ;
+   - texte secondaire : --muted (#5C7185, 4,9:1 sur papier).
 ------------------------------------------------------------------- */
 :root {
-  --night: #13161c;
-  --night-2: #1b1f27;
-  --night-3: #272c36;
-  --light: #f4f2ee;
-  --gold: #c9a25b;
-  --gold-d: #785a22;
-  --gold-l: #e3c98e;
-  --ink: #1a1d23;
-  --muted: #6a6459;
-  --muted-d: #a49c8c;
-  --terracotta: #b45a3c;
+  --paper: #fbfcfd;
+  --surface: #ffffff;
+  --sand: #f7f1ea;
+  --sky-50: #eff6fb;
+  --sky-100: #dcebf6;
+  --sky-200: #bbd9ee;
+  --sky-400: #6faad3;
+  --sky-600: #3a80af;
+  --sky-700: #2c6a94;
+  --sky-800: #1e4a69;
+  --ink: #101f2b;
+  --ink-soft: #1b2f3e;
+  --text: #17262f;
+  --muted: #5c7185;
+  --muted-dark: #9db4c6;
+  --terra: #c2643e;
+  --terra-d: #a7522f;
+  --terra-soft: #e9c4b2;
+  --line: var(--sky-100);
 
-  --gold-gradient: linear-gradient(135deg, #e3c98e 0%, #c9a25b 48%, #a9823f 100%);
+  --hero-gradient: linear-gradient(150deg, var(--sky-700), var(--sky-800) 68%);
 
-  /* Alias shadcn/ui, réhabillés sur nos tokens (jamais le thème par défaut) */
-  --background: var(--night);
-  --foreground: var(--light);
-  --card: var(--night-2);
-  --card-foreground: var(--light);
-  --primary: var(--gold);
-  --primary-foreground: var(--ink);
-  --muted-foreground: var(--muted-d);
-  --border: var(--night-3);
-  --input: var(--night-3);
-  --ring: var(--gold-l);
-  --radius: 10px;
+  /* Alias shadcn/ui réhabillés */
+  --background: var(--paper);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --muted-foreground: var(--muted);
+  --border: var(--line);
+  --input: var(--sky-200);
+  --ring: var(--sky-400);
+  --radius: 20px;
 }
 
 @theme inline {
-  --color-night: var(--night);
-  --color-night-2: var(--night-2);
-  --color-night-3: var(--night-3);
-  --color-light: var(--light);
-  --color-gold: var(--gold);
-  --color-gold-d: var(--gold-d);
-  --color-gold-l: var(--gold-l);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-sand: var(--sand);
+  --color-sky-50: var(--sky-50);
+  --color-sky-100: var(--sky-100);
+  --color-sky-200: var(--sky-200);
+  --color-sky-400: var(--sky-400);
+  --color-sky-600: var(--sky-600);
+  --color-sky-700: var(--sky-700);
+  --color-sky-800: var(--sky-800);
   --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-text: var(--text);
   --color-muted: var(--muted);
-  --color-muted-d: var(--muted-d);
-  --color-terracotta: var(--terracotta);
+  --color-muted-dark: var(--muted-dark);
+  --color-terra: var(--terra);
+  --color-terra-d: var(--terra-d);
+  --color-terra-soft: var(--terra-soft);
+  --color-line: var(--line);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-primary: var(--primary);
   --color-border: var(--border);
   --color-ring: var(--ring);
 
-  --radius-card: 10px;
-  --radius-block: 16px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 34px;
 }
 
 /* ---------------------------- Base ---------------------------- */
 html {
-  background: var(--night);
-  color-scheme: dark;
+  background: var(--paper);
+  color-scheme: light;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--night);
-  color: var(--light);
+  background: var(--paper);
+  color: var(--text);
   font-family: var(--font-body), system-ui, sans-serif;
   font-weight: 400;
   line-height: 1.6;
@@ -76,15 +94,15 @@ body {
 }
 
 ::selection {
-  background: var(--gold);
+  background: var(--terra-soft);
   color: var(--ink);
 }
 
 /* Focus clavier visible partout */
 :focus-visible {
-  outline: 2px solid var(--gold-l);
+  outline: 2px solid var(--sky-600);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 /* Lenis */
@@ -106,63 +124,60 @@ html.has-cursor * {
 }
 
 /* ------------------------- Typographie ------------------------- */
-/* --font-display / --font-body sont posées par next/font sur <html> */
+/* --font-display (Fraunces) / --font-body (Inter) posées par next/font sur <html> */
 @utility font-display {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), Georgia, serif;
+  font-variation-settings: "SOFT" 40, "WONK" 1;
 }
 
 @utility font-body {
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
-/* L'italique de Cormorant est une famille à part (chargée sans préchargement). */
-:where(.font-display, .h1-display, .h2-display) :where(em, i),
-.font-display.italic {
-  font-family: var(--font-display-italic), var(--font-display), serif;
-  font-style: italic;
+/* Mot mis en valeur dans un titre : couleur, pas d'italique. */
+:where(.font-display, .h1-display, .h2-display) :where(em, i) {
+  font-style: normal;
+  color: var(--accent, var(--terra-d));
 }
 
 @utility h1-display {
-  font-family: var(--font-display), serif;
-  font-size: clamp(2.6rem, 6.4vw, 4.6rem);
-  font-weight: 400;
-  letter-spacing: -0.012em;
-  line-height: 1.02;
+  font-family: var(--font-display), Georgia, serif;
+  font-variation-settings: "SOFT" 40, "WONK" 1;
+  font-size: clamp(2.1rem, 5.4vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  text-transform: uppercase;
 }
 
 @utility h2-display {
-  font-family: var(--font-display), serif;
-  font-size: clamp(1.9rem, 4vw, 2.9rem);
-  font-weight: 400;
-  letter-spacing: -0.008em;
+  font-family: var(--font-display), Georgia, serif;
+  font-variation-settings: "SOFT" 40, "WONK" 1;
+  font-size: clamp(1.6rem, 3.4vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
   line-height: 1.08;
 }
 
+/* Sur-titre (eyebrow) */
 @utility smallcaps {
   font-family: var(--font-body), sans-serif;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
+/* Libellé de bouton : casse normale, comme la maquette */
 @utility btn-label {
   font-family: var(--font-body), sans-serif;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.17em;
-  text-transform: uppercase;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
-@utility text-gold-gradient {
-  background: var(--gold-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-@utility bg-gold-gradient {
-  background: var(--gold-gradient);
+@utility bg-hero {
+  background: var(--hero-gradient);
 }
 
 /* Masque pour les révélations mot par mot */
@@ -170,8 +185,8 @@ html.has-cursor * {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
-  padding-block: 0.16em 0.1em;
-  margin-block: -0.16em -0.1em;
+  padding-block: 0.12em 0.08em;
+  margin-block: -0.12em -0.08em;
 }
 
 /* ---------------------- Bandeau de logos ----------------------- */

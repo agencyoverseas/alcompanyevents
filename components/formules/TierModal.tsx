@@ -49,13 +49,13 @@ export function TierModal({
       onClick={(e) => e.target === e.currentTarget && onClose()}
       data-lenis-prevent
       aria-labelledby="tier-modal-title"
-      className="m-auto w-[min(560px,calc(100vw-2rem))] max-h-[calc(100svh-2rem)] overflow-y-auto rounded-[16px] border border-night-3 bg-night-2 p-0 text-light backdrop:bg-night/80 backdrop:backdrop-blur-sm open:animate-[seq-fade-up_.4s_cubic-bezier(.22,1,.36,1)]"
+      className="m-auto w-[min(560px,calc(100vw-2rem))] max-h-[calc(100svh-2rem)] overflow-y-auto rounded-[34px] border border-line bg-white p-0 text-text backdrop:bg-paper/80 backdrop:backdrop-blur-sm open:animate-[seq-fade-up_.4s_cubic-bezier(.22,1,.36,1)]"
     >
       {tier && (
         <div className="p-6 sm:p-8">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="smallcaps text-gold-l">{family.name}</p>
+              <p className="smallcaps text-terra-d">{family.name}</p>
               <h2 id="tier-modal-title" className="h2-display mt-2">
                 Formule {tier.name}
               </h2>
@@ -64,25 +64,25 @@ export function TierModal({
               type="button"
               onClick={onClose}
               aria-label="Fermer"
-              className="grid size-10 shrink-0 place-items-center rounded-[10px] text-muted-d hover:text-light"
+              className="grid size-10 shrink-0 place-items-center rounded-[20px] text-muted hover:text-text"
             >
               <X className="size-5" aria-hidden />
             </button>
           </div>
-          <p className="mt-2 text-muted-d">{tier.tagline}</p>
+          <p className="mt-2 text-muted">{tier.tagline}</p>
           <p className="mt-5">
-            <span className="smallcaps block text-muted-d">{price === null ? "Tarif" : "À partir de"}</span>
-            <span className="font-display text-4xl text-gold-l">{formatPrice(price)}</span>
+            <span className="smallcaps block text-muted">{price === null ? "Tarif" : "À partir de"}</span>
+            <span className="font-display text-4xl font-black text-sky-800">{formatPrice(price)}</span>
           </p>
 
           <div className="mt-6 space-y-5">
             {cumulativeIncludes(tier).map(({ tier: t, items }) => (
               <div key={t.id}>
-                <p className="smallcaps text-muted-d">{t.id === tier.id ? `Spécifique ${t.name}` : `Inclus de ${t.name}`}</p>
+                <p className="smallcaps text-muted">{t.id === tier.id ? `Spécifique ${t.name}` : `Inclus de ${t.name}`}</p>
                 <ul className="mt-2 space-y-2">
                   {items.map((it) => (
                     <li key={it} className="flex gap-3 text-sm">
-                      <Check className="mt-0.5 size-4 shrink-0 text-gold-l" aria-hidden />
+                      <Check className="mt-0.5 size-4 shrink-0 text-terra-d" aria-hidden />
                       {it}
                     </li>
                   ))}
@@ -91,7 +91,7 @@ export function TierModal({
             ))}
           </div>
 
-          <p className="mt-6 rounded-[10px] border border-night-3 bg-night px-4 py-3 text-sm text-muted-d">
+          <p className="mt-6 rounded-[20px] border border-line bg-paper px-4 py-3 text-sm text-muted">
             Acompte de {ACOMPTE_PERCENT} % à la réservation. Le prix final dépend du nombre d&apos;invités, du lieu et
             des options.
           </p>
@@ -103,7 +103,7 @@ export function TierModal({
             <button
               type="button"
               onClick={onClose}
-              className="btn-label h-14 rounded-[10px] border border-night-3 px-6 text-light/80 hover:border-gold/60"
+              className="btn-label h-14 rounded-[20px] border border-line px-6 text-text/80 hover:border-terra/60"
             >
               Comparer encore
             </button>

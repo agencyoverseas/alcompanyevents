@@ -164,7 +164,7 @@ export function SoundToggle() {
       onClick={toggle}
       aria-pressed={on}
       aria-label={on ? "Couper le son" : "Activer le son d'ambiance"}
-      className="grid size-11 place-items-center rounded-[10px] border border-night-3 bg-night-2/80 text-muted-d backdrop-blur transition-colors hover:text-gold-l"
+      className="grid size-11 place-items-center rounded-full border border-line bg-white/90 text-muted backdrop-blur transition-colors hover:text-terra-d"
     >
       {on ? <Volume2 className="size-4" aria-hidden /> : <VolumeX className="size-4" aria-hidden />}
     </button>

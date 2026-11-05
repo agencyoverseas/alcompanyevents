@@ -1,9 +1,27 @@
-// Déroulé en quatre étapes — formulation à faire relire par la cliente.
+// « Comment ça se passe ? » — textes fournis par la cliente (repris mot pour mot).
 export type Step = { n: string; title: string; text: string };
 
+export const PROCESS_TITLE = "4 étapes et vous n'avez plus rien à gérer.";
+
 export const process: Step[] = [
-  { n: "01", title: "On fait connaissance", text: "Un premier échange pour cerner l'événement, vos envies, le lieu, le nombre d'invités et le budget." },
-  { n: "02", title: "On imagine", text: "Proposition sur mesure, planche d'inspiration, couleurs et matières : vous validez avant qu'on lance quoi que ce soit." },
-  { n: "03", title: "On prépare", text: "Réservation avec un acompte de 50 %, puis préparation du matériel et coordination des prestataires si besoin." },
-  { n: "04", title: "On installe, vous profitez", text: "Installation sur place, présence le jour J selon la formule, et démontage après la fête." },
+  {
+    n: "01",
+    title: "On discute",
+    text: "Vous nous parlez de votre projet en remplissant notre formulaire de demande de devis. Date, lieu, nombre d'invités, ambiance, envies et budget : nous apprenons à connaître votre projet.",
+  },
+  {
+    n: "02",
+    title: "On imagine",
+    text: "Vous recevez une planche d'inspiration qui vous plonge dans l'univers imaginé pour votre événement, accompagnée de votre proposition et de votre devis détaillé.",
+  },
+  {
+    n: "03",
+    title: "On valide",
+    text: "La réservation est confirmée par le versement d'un acompte de 50 %. Nous affinons ensuite chaque détail avec vous : couleurs, matières, décoration, menus et différents éléments de votre événement. Selon la formule choisie, nous nous chargeons également du matériel et de la coordination avec les différents prestataires.",
+  },
+  {
+    n: "04",
+    title: "On installe, vous profitez",
+    text: "Le jour J, notre équipe prend possession des lieux et installe votre décoration. Lorsque la coordination est incluse dans votre formule, nous veillons également au bon déroulement de l'événement. Vous n'avez plus qu'à profiter de votre moment. À la fin de l'événement, notre équipe se charge du démontage.",
+  },
 ];

@@ -105,18 +105,18 @@ function CursorInner() {
         <div
           ref={fill}
           data-mode="idle"
-          className="absolute inset-0 rounded-full border border-gold transition-[background-color,border-color] duration-300 data-[mode=link]:bg-gold/15 data-[mode=view]:border-transparent data-[mode=view]:bg-gold"
+          className="absolute inset-0 rounded-full border border-terra transition-[background-color,border-color] duration-300 data-[mode=link]:bg-terra/15 data-[mode=view]:border-transparent data-[mode=view]:bg-terra-d"
         />
         <span
           ref={label}
-          className="smallcaps absolute inset-0 grid place-items-center text-ink opacity-0 transition-opacity duration-200"
+          className="smallcaps absolute inset-0 grid place-items-center text-white opacity-0 transition-opacity duration-200"
         >
           Voir
         </span>
       </div>
       <div
         ref={dot}
-        className="absolute left-0 top-0 size-[5px] rounded-full bg-terracotta opacity-0 will-change-transform"
+        className="absolute left-0 top-0 size-[5px] rounded-full bg-terra opacity-0 will-change-transform"
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import { site } from "@/content/site";
 import { localBusinessJsonLd } from "@/lib/seo";
 import { QUERIES } from "@/lib/queries";
@@ -13,28 +13,16 @@ import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { SoundProvider } from "@/components/providers/Sound";
 import "./globals.css";
 
-const display = Cormorant_Garamond({
+// Fraunces variable (wght 100–900 + axes SOFT / WONK). Axe opsz retiré : police 121 → 62 Ko sur le chemin critique mobile.
+const display = Fraunces({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  style: ["normal"],
+  axes: ["SOFT", "WONK"],
   display: "swap",
   variable: "--font-display",
 });
 
-// Italique : uniquement dans des titres sous la ligne de flottaison → pas de
-// préchargement, pour libérer la bande passante du LCP mobile.
-const displayItalic = Cormorant_Garamond({
+const body = Inter({
   subsets: ["latin"],
-  weight: ["400"],
-  style: ["italic"],
-  display: "swap",
-  preload: false,
-  variable: "--font-display-italic",
-});
-
-const body = Manrope({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
   variable: "--font-body",
 });
@@ -51,8 +39,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#13161C",
-  colorScheme: "dark",
+  themeColor: "#FBFCFD",
+  colorScheme: "light",
 };
 
 /**
@@ -69,7 +57,7 @@ const bootScript = `(function(){var d=document.documentElement;try{if(location.p
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${display.variable} ${displayItalic.variable} ${body.variable}`} suppressHydrationWarning>
+    <html lang="fr" className={`${display.variable} ${body.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script
