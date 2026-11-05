@@ -15,3 +15,17 @@ Source : mascotte détourée fournie (`mascot-original.png`, 1856×2304, fond tr
 Réglages dans `components/scene/store.ts` : `HAND_UV` (poing mesuré à u 0,3515 / v 0,2769),
 `CHARACTER.height / y / xFactor`, `displacementScale` (< 0.35).
 Grappe 3D : `CLUSTER_X` / `CLUSTER_Y` dans `components/scene/Balloons.tsx`.
+
+## Audrey articulée (scène 3D bureau)
+
+Découpée dans `character.png` (coordonnées dans `components/scene/store.ts`, objet `RIG`) :
+
+| Fichier | Pièce |
+|---|---|
+| `character-body.webp` | Corps fixe (sans tête ni avant-bras ; le cou reste pour éviter un trou au pivot) |
+| `character-head.webp` | Tête, yeux « vides » (blanc de l'œil redessiné sous l'iris) |
+| `character-irises.webp` + `character-eyemask.webp` | Iris décalés dans le shader, limités à l'ouverture de l'œil |
+| `character-forearm.webp` | Avant-bras + main, pivot au coude caché dans la manchette |
+| `character-strings.webp` | Ficelles tenues dans le poing, lâchées avec les ballons |
+
+Si l'illustration change, régénérer ces fichiers (repérer à nouveau iris, cou, coude).

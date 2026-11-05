@@ -41,3 +41,31 @@ export const easeOutBack = (x: number, s = 1.70158) => {
 };
 export const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
 export const easeInOutSine = (x: number) => -(Math.cos(Math.PI * x) - 1) / 2;
+
+/**
+ * Articulation d'Audrey (coordonnées en pixels de character.png, 1286×1737).
+ * Pièces découpées dans l'image fournie : voir public/scene/README.md.
+ */
+export const RIG = {
+  size: [1286, 1737] as const,
+  /** Centre du cou (pivot de la tête) et coude caché dans la manchette (pivot de l'avant-bras). */
+  headPivot: [874, 450] as const,
+  elbow: [556, 743] as const,
+  /** Rectangles utiles (x0, y0, x1, y1) : tête + cou, avant-bras + ficelles du poing. */
+  headRect: [720, 0, 1286, 472] as const,
+  armRect: [376, 436, 632, 862] as const,
+  /** Course maximale des iris (px) en x / y, et inclinaison de la tête (rad). */
+  irisRange: [7, 5] as const,
+  headTilt: 0.05,
+  headTiltUp: 0.08,
+  /** Lissage du regard par image (suivi doux, jamais brusque). */
+  gazeLerp: 0.07,
+  /** Pendant l'envol, le regard suit les ballons (en haut à gauche), puis revient à la souris. */
+  balloonGaze: [-0.6, 1] as const,
+  lookAtBalloons: [0.15, 0.5] as const,
+  lookBack: [0.82, 1] as const,
+  /** Ficelles du poing lâchées avec les premiers ballons, puis le bras redescend vers l'accoudoir (≈ 66°). */
+  stringsRelease: [0.24, 0.42] as const,
+  armLower: [0.42, 0.72] as const,
+  armAngle: 1.15,
+};
