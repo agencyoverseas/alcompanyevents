@@ -61,9 +61,16 @@ export function Character({ hand }: { hand: Vector3 }) {
   // ballons (monte et s'efface) au moment où ils sont lâchés.
   const strings = useRef<Mesh>(null);
   const stringsMat = useRef<MeshStandardMaterial>(null);
+  // Profondeur réelle du poing lue dans la carte de profondeur (celle qui déplace le plan) :
+  // les ficelles 3D partent exactement de la main, quels que soient l'avancée de la
+  // caméra et le suivi de la souris (sinon décalage de parallaxe).
   const handLocal = useMemo(
-    () => ({ x: (HAND_UV.u - 0.5) * w, y: (0.5 - HAND_UV.v) * h, z: CHARACTER.displacementScale * 0.85 }),
-    [w, h],
+    () => ({
+      x: (HAND_UV.u - 0.5) * w,
+      y: (0.5 - HAND_UV.v) * h,
+      z: sampleDepth(smoothDepth, HAND_UV.u, HAND_UV.v) * CHARACTER.displacementScale,
+    }),
+    [w, h, smoothDepth],
   );
 
   useFrame((state) => {
@@ -153,4 +160,15 @@ function blurDepth(depth: Texture): Texture {
   const tex = new CanvasTexture(canvas);
   tex.flipY = depth.flipY;
   return tex;
+}
+
+/** Valeur (0–1) de la carte de profondeur en (u, v), v mesuré depuis le haut de l'image. */
+function sampleDepth(tex: Texture, u: number, v: number): number {
+  const src = tex.image as CanvasImageSource & { width: number; height: number };
+  const c = document.createElement("canvas");
+  c.width = c.height = 1;
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  if (!ctx || !src?.width) return 0.85;
+  ctx.drawImage(src, Math.round(u * src.width) - 2, Math.round(v * src.height) - 2, 5, 5, 0, 0, 1, 1);
+  return ctx.getImageData(0, 0, 1, 1).data[0] / 255;
 }
