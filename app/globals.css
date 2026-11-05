@@ -1,0 +1,199 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Tokens — direction "nuit & or". Valeurs vérifiées AA (voir brief §3).
+   Règle : jamais --gold en TEXTE sur fond clair → --gold-d.
+           Sur fond sombre, le texte doré est --gold-l.
+------------------------------------------------------------------- */
+:root {
+  --night: #13161c;
+  --night-2: #1b1f27;
+  --night-3: #272c36;
+  --light: #f4f2ee;
+  --gold: #c9a25b;
+  --gold-d: #785a22;
+  --gold-l: #e3c98e;
+  --ink: #1a1d23;
+  --muted: #6a6459;
+  --muted-d: #a49c8c;
+  --terracotta: #b45a3c;
+
+  --gold-gradient: linear-gradient(135deg, #e3c98e 0%, #c9a25b 48%, #a9823f 100%);
+
+  /* Alias shadcn/ui, réhabillés sur nos tokens (jamais le thème par défaut) */
+  --background: var(--night);
+  --foreground: var(--light);
+  --card: var(--night-2);
+  --card-foreground: var(--light);
+  --primary: var(--gold);
+  --primary-foreground: var(--ink);
+  --muted-foreground: var(--muted-d);
+  --border: var(--night-3);
+  --input: var(--night-3);
+  --ring: var(--gold-l);
+  --radius: 10px;
+}
+
+@theme inline {
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-night-3: var(--night-3);
+  --color-light: var(--light);
+  --color-gold: var(--gold);
+  --color-gold-d: var(--gold-d);
+  --color-gold-l: var(--gold-l);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-muted-d: var(--muted-d);
+  --color-terracotta: var(--terracotta);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --radius-card: 10px;
+  --radius-block: 16px;
+}
+
+/* ---------------------------- Base ---------------------------- */
+html {
+  background: var(--night);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--night);
+  color: var(--light);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+/* Focus clavier visible partout */
+:focus-visible {
+  outline: 2px solid var(--gold-l);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Curseur personnalisé : on masque le curseur natif uniquement quand il est actif */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
+/* ------------------------- Typographie ------------------------- */
+/* --font-display / --font-body sont posées par next/font sur <html> */
+@utility font-display {
+  font-family: var(--font-display), serif;
+}
+
+@utility font-body {
+  font-family: var(--font-body), sans-serif;
+}
+
+@utility h1-display {
+  font-family: var(--font-display), serif;
+  font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  line-height: 1.02;
+}
+
+@utility h2-display {
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  font-weight: 400;
+  letter-spacing: -0.008em;
+  line-height: 1.08;
+}
+
+@utility smallcaps {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+@utility btn-label {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+@utility text-gold-gradient {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-gold-gradient {
+  background: var(--gold-gradient);
+}
+
+/* Masque pour les révélations mot par mot */
+@utility word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* ---------------------- Bandeau de logos ----------------------- */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Indicateur de scroll */
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(220%);
+  }
+}
+
+/* --------------------- Mouvement réduit ------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
