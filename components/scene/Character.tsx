@@ -8,6 +8,7 @@ import {
   MathUtils,
   SRGBColorSpace,
   type Group,
+  type Mesh,
   type MeshStandardMaterial,
   type Texture,
   type Vector3,
@@ -16,6 +17,8 @@ import { phase, SCROLL } from "@/lib/gsap";
 import { CHARACTER, HAND_UV, SEQ, clamp01, easeOutBack, easeOutCubic, introTime, sceneState } from "./store";
 
 const BASE_Z = SCROLL.hero.camera.zFrom;
+/** Tranche du scroll où les ficelles du poing sont lâchées (alignée sur les ballons). */
+const STRINGS_RELEASE = [0.24, 0.42] as const;
 
 /**
  * Plan texturé (character.png) déplacé par sa carte de profondeur.
@@ -24,12 +27,18 @@ const BASE_Z = SCROLL.hero.camera.zFrom;
  */
 export function Character({ hand }: { hand: Vector3 }) {
   const gl = useThree((s) => s.gl);
-  const [map, depth] = useTexture(["/scene/character.webp", "/scene/character-depth.webp"], (textures) => {
-    const [m] = Array.isArray(textures) ? textures : [textures];
-    m.colorSpace = SRGBColorSpace;
-    m.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());
-    m.needsUpdate = true;
-  });
+  const [map, depth, stringsMap] = useTexture(
+    ["/scene/character.webp", "/scene/character-depth.webp", "/scene/character-strings.webp"],
+    (textures) => {
+      const list = Array.isArray(textures) ? textures : [textures];
+      for (const m of [list[0], list[2]]) {
+        if (!m) continue;
+        m.colorSpace = SRGBColorSpace;
+        m.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());
+        m.needsUpdate = true;
+      }
+    },
+  );
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
 
@@ -48,6 +57,10 @@ export function Character({ hand }: { hand: Vector3 }) {
 
   const group = useRef<Group>(null);
   const mat = useRef<MeshStandardMaterial>(null);
+  // Calque des ficelles tenues dans le poing : visible au repos, il part avec les
+  // ballons (monte et s'efface) au moment où ils sont lâchés.
+  const strings = useRef<Mesh>(null);
+  const stringsMat = useRef<MeshStandardMaterial>(null);
   const handLocal = useMemo(
     () => ({ x: (HAND_UV.u - 0.5) * w, y: (0.5 - HAND_UV.v) * h, z: CHARACTER.displacementScale * 0.85 }),
     [w, h],
@@ -73,6 +86,14 @@ export function Character({ hand }: { hand: Vector3 }) {
     const cam = phase(p, SCROLL.hero.phases.camera);
     g.position.set(x * (1 - 0.38 * cam), CHARACTER.y - (1 - rise) * 1.6 - (1 - settle) * 0.07 + cam * 0.12, 0);
 
+    // Ficelles du poing : lâchées en même temps que les premiers ballons.
+    const release = phase(p, STRINGS_RELEASE);
+    if (strings.current && stringsMat.current) {
+      stringsMat.current.opacity = fade * (1 - release);
+      strings.current.position.y = release * 0.6;
+      strings.current.visible = release < 1;
+    }
+
     hand.set(
       g.position.x + handLocal.x * grow,
       g.position.y + handLocal.y * grow,
@@ -90,6 +111,21 @@ export function Character({ hand }: { hand: Vector3 }) {
           displacementMap={smoothDepth}
           displacementScale={CHARACTER.displacementScale}
           transparent
+          alphaTest={0.02}
+          opacity={0}
+          roughness={0.85}
+          metalness={0}
+        />
+      </mesh>
+      <mesh ref={strings} position={[0, 0, 0.004]} renderOrder={1}>
+        <planeGeometry args={[w, h, CHARACTER.segments[0], CHARACTER.segments[1]]} />
+        <meshStandardMaterial
+          ref={stringsMat}
+          map={stringsMap}
+          displacementMap={smoothDepth}
+          displacementScale={CHARACTER.displacementScale}
+          transparent
+          depthWrite={false}
           alphaTest={0.02}
           opacity={0}
           roughness={0.85}

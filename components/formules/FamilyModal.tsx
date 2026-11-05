@@ -93,7 +93,7 @@ export function FamilyModal({ family, onClose }: { family: Family | null; onClos
                   variant={t.popular ? "terra" : "outline"}
                   size="sm"
                 >
-                  Choisir {t.name}
+                  Demander un devis {t.name}
                 </ButtonLink>
               </div>
             );
