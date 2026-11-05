@@ -35,3 +35,17 @@ export function phase(p: number, [a, b]: readonly [number, number]) {
 }
 
 export { gsap, ScrollTrigger, useGSAP };
+
+/**
+ * Un pin ajoute de la hauteur après le premier rendu : si l'URL vise une ancre
+ * (ex. /#devis depuis une formule), on y re-défile une fois les pins posés.
+ */
+export function rescrollToHash() {
+  const hash = window.location.hash;
+  if (!hash || hash.length < 2) return;
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+    const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: "instant" });
+  });
+}

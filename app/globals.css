@@ -163,8 +163,8 @@ html.has-cursor * {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-block: 0.16em 0.1em;
+  margin-block: -0.16em -0.1em;
 }
 
 /* ---------------------- Bandeau de logos ----------------------- */
@@ -195,5 +195,117 @@ html.has-cursor * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ======================= Héro : séquence d'entrée =======================
+   CSS pur : le héro est lisible même si le JS n'a pas tourné.
+   Le script inline de layout.tsx met la séquence en pause (data-scene /
+   data-fonts) tant que la scène 3D et les polices ne sont pas prêtes.
+========================================================================= */
+@keyframes seq-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+}
+@keyframes seq-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes seq-word {
+  from {
+    transform: translate3d(0, 105%, 0);
+  }
+}
+@keyframes seq-unveil {
+  to {
+    opacity: 0;
+  }
+}
+/* Arrivée depuis le bas avec léger dépassement (fauteuil / mascotte).
+   Transform seul : l'image reste candidate LCP dès le premier rendu. */
+@keyframes seq-rise {
+  0% {
+    transform: translate3d(0, 70px, 0);
+  }
+  70% {
+    transform: translate3d(0, -8px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.hero-seq {
+  animation-duration: 0.8s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-delay: var(--d, 0s);
+}
+.seq-fade-up {
+  animation-name: seq-fade-up;
+}
+.seq-fade {
+  animation-name: seq-fade;
+  animation-duration: 1.1s;
+}
+.seq-word {
+  animation-name: seq-word;
+  animation-duration: 0.7s;
+}
+.seq-unveil {
+  animation-name: seq-unveil;
+  animation-duration: 0.6s;
+  animation-timing-function: ease-out;
+}
+.seq-rise {
+  animation-name: seq-rise;
+  animation-duration: 0.9s;
+}
+
+html[data-scene="pending"] .hero-seq,
+html[data-fonts="pending"] .hero-copy .hero-seq {
+  animation-play-state: paused;
+}
+
+/* Le visuel statique (mascot.png) est masqué dès que la 3D va se monter. */
+html[data-scene="pending"] .hero-static,
+html[data-scene="ready"] .hero-static {
+  display: none;
+}
+
+/* Parallaxe mobile en CSS pur (scroll-driven animations), transform uniquement. */
+@keyframes hero-parallax {
+  to {
+    transform: translate3d(0, 18%, 0) scale(0.96);
+  }
+}
+@supports (animation-timeline: scroll()) {
+  .hero-parallax {
+    animation: hero-parallax linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 100svh;
+  }
+}
+
+/* ============================ Loader 3D ============================ */
+.scene-loader {
+  display: none;
+}
+html[data-scene="pending"] .scene-loader,
+html[data-scene="ready"] .scene-loader {
+  display: flex;
+}
+html[data-scene="ready"] .scene-loader {
+  transform: translate3d(0, -100%, 0);
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-parallax {
+    animation: none !important;
   }
 }
