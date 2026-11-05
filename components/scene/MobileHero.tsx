@@ -23,6 +23,7 @@ export function MobileHero() {
             alt="Audrey, en personnage 3D, assise dans son fauteuil moutarde avec une grappe de ballons"
             fill
             preload
+            fetchPriority="high"
             sizes="(max-width: 767px) 92vw, 50vw"
             className="object-contain object-bottom md:object-center"
           />

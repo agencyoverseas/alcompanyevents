@@ -2,7 +2,7 @@
 
 import { useTexture } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   CanvasTexture,
   MathUtils,
@@ -23,16 +23,15 @@ const BASE_Z = SCROLL.hero.camera.zFrom;
  * Écrit la position monde de la main dans `hand` pour accrocher les ficelles.
  */
 export function Character({ hand }: { hand: Vector3 }) {
-  const [map, depth] = useTexture(["/scene/character.png", "/scene/character-depth.png"]);
   const gl = useThree((s) => s.gl);
+  const [map, depth] = useTexture(["/scene/character.png", "/scene/character-depth.png"], (textures) => {
+    const [m] = Array.isArray(textures) ? textures : [textures];
+    m.colorSpace = SRGBColorSpace;
+    m.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());
+    m.needsUpdate = true;
+  });
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
-
-  useLayoutEffect(() => {
-    map.colorSpace = SRGBColorSpace;
-    map.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());
-    map.needsUpdate = true;
-  }, [map, gl]);
 
   const smoothDepth = useMemo(() => blurDepth(depth), [depth]);
   useEffect(() => () => smoothDepth.dispose(), [smoothDepth]);

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, m } from "motion/react";
 import { CheckCircle2, Loader2, MessageCircle } from "lucide-react";
-import { useEffect, useId, useState, type FormEvent } from "react";
+import { useId, useState, useSyncExternalStore, type FormEvent } from "react";
 import { budgets, eventTypes, type DevisPayload } from "@/content/devis";
 import { site } from "@/content/site";
 import { Button } from "@/components/ui/Button";
@@ -53,27 +53,39 @@ function Field({
  * Pré-rempli depuis une formule : /?type=…&formule=…#devis.
  * Fonctionne sans JS (POST natif vers /api/devis, redirection).
  */
-export function DevisForm() {
-  const id = useId();
-  const [type, setType] = useState("");
-  const [formule, setFormule] = useState("");
-  const [message, setMessage] = useState("");
-  const [noDate, setNoDate] = useState(false);
-  const [status, setStatus] = useState<Status>("idle");
-  const [errorMsg, setErrorMsg] = useState("");
+// La query string ne change qu'à la navigation : pas d'abonnement nécessaire.
+const noop = () => () => {};
+const readSearch = () => window.location.search;
 
-  // Pré-remplissage depuis l'URL (venue d'une formule) ou retour d'envoi sans JS.
-  useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-    const t = q.get("type");
-    const f = q.get("formule");
-    if (t) setType((eventTypes as readonly string[]).includes(t) ? t : "Autre");
-    if (f) {
-      setFormule(f);
-      setMessage((prev) => prev || `Formule qui m'intéresse : ${f}${t ? ` (${t})` : ""}.\n`);
-    }
-    if (q.get("devis") === "ok") setStatus("sent");
-  }, []);
+type Prefill = { type: string; formule: string; message: string; sent: boolean };
+
+function parsePrefill(search: string): Prefill {
+  const q = new URLSearchParams(search);
+  const t = q.get("type");
+  const f = q.get("formule") ?? "";
+  return {
+    type: t ? ((eventTypes as readonly string[]).includes(t) ? t : "Autre") : "",
+    formule: f,
+    message: f ? `Formule qui m'intéresse : ${f}${t ? ` (${t})` : ""}.\n` : "",
+    sent: q.get("devis") === "ok",
+  };
+}
+
+export function DevisForm() {
+  // Serveur et hydratation : "" ; ensuite la vraie query string. Le formulaire est
+  // remonté (key) avec le pré-remplissage venu d'une formule.
+  const search = useSyncExternalStore(noop, readSearch, () => "");
+  return <DevisFormInner key={search} prefill={parsePrefill(search)} />;
+}
+
+function DevisFormInner({ prefill }: { prefill: Prefill }) {
+  const id = useId();
+  const [type, setType] = useState(prefill.type);
+  const formule = prefill.formule;
+  const [message, setMessage] = useState(prefill.message);
+  const [noDate, setNoDate] = useState(false);
+  const [status, setStatus] = useState<Status>(prefill.sent ? "sent" : "idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

@@ -22,6 +22,9 @@ type Overlay = { x: number; y: number; r: number; phase: "cover" | "reveal" } | 
 /** Lu par app/template.tsx : vrai dès la première navigation client. */
 export const navState = { navigated: false };
 
+/** Émis au départ d'une transition : la scène WebGL se met en pause (écran bientôt couvert). */
+export const NAVIGATE_EVENT = "alc:navigate";
+
 const Ctx = createContext<{ navigate: (href: string, from?: Point) => void } | null>(null);
 
 const COVER_S = PAGE_TRANSITION.routeChangeMs / 1000; // 0,42 s
@@ -55,6 +58,7 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
       const y = from?.y ?? h / 2;
       const r = Math.hypot(Math.max(x, w - x), Math.max(y, h - y)) + 4;
       target.current = dest;
+      window.dispatchEvent(new Event(NAVIGATE_EVENT));
       setOverlay({ x, y, r, phase: "cover" });
       window.setTimeout(() => router.push(href), PAGE_TRANSITION.routeChangeMs);
     },

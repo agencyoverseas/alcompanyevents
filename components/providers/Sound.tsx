@@ -1,7 +1,7 @@
 "use client";
 
 import { Volume2, VolumeX } from "lucide-react";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useSyncExternalStore } from "react";
 
 // Son : désactivé par défaut, jamais d'autoplay, jamais de son au chargement.
 // Aucun fichier audio fourni : ambiance et sons d'interface synthétisés en Web Audio.
@@ -16,13 +16,27 @@ const read = () => {
     return false;
   }
 };
+// Repli en mémoire si localStorage est indisponible (navigation privée, etc.).
+let memory = false;
+const CHANGE = "alc:sound";
 const write = (on: boolean) => {
+  memory = on;
   try {
     window.localStorage.setItem(KEY, on ? "on" : "off");
   } catch {
     /* stockage indisponible : on garde l'état en mémoire */
   }
+  window.dispatchEvent(new Event(CHANGE));
 };
+const subscribe = (cb: () => void) => {
+  window.addEventListener(CHANGE, cb);
+  window.addEventListener("storage", cb);
+  return () => {
+    window.removeEventListener(CHANGE, cb);
+    window.removeEventListener("storage", cb);
+  };
+};
+const snapshot = () => read() || memory;
 
 type Engine = { ctx: AudioContext; master: GainNode; stopAmbient: () => void };
 
@@ -84,7 +98,7 @@ const Ctx = createContext<{ on: boolean; toggle: () => void }>({ on: false, togg
 export const useSound = () => useContext(Ctx);
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
-  const [on, setOn] = useState(false);
+  const on = useSyncExternalStore(subscribe, snapshot, () => false);
   const engine = useRef<Engine | null>(null);
 
   const start = useCallback(() => {
@@ -110,7 +124,6 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   // Préférence mémorisée : on la reprend, mais le son ne démarre qu'au premier geste.
   useEffect(() => {
     if (!read()) return;
-    setOn(true);
     const arm = () => start();
     window.addEventListener("pointerdown", arm, { once: true });
     window.addEventListener("keydown", arm, { once: true });
@@ -135,7 +148,6 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 
   const toggle = useCallback(() => {
     const next = !on;
-    setOn(next);
     write(next);
     if (next) start();
     else stop();

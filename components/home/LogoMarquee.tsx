@@ -17,27 +17,42 @@ export function LogoMarquee() {
   useEffect(() => {
     const el = track.current;
     if (!el || reduced) return;
+    // Animation CSS mise en cache : getAnimations() force un recalcul de style,
+    // on ne l'appelle qu'une fois. La boucle ne tourne que pendant/après un scroll
+    // et seulement quand le bandeau est visible.
+    let anim: Animation | undefined;
+    let visible = false;
     let lastY = window.scrollY;
     let lastT = performance.now();
     let rate = 1;
     let target = 1;
     let raf = 0;
+    const loop = () => {
+      target += (1 - target) * 0.04;
+      rate += (target - rate) * 0.12;
+      anim ??= el.getAnimations()[0];
+      if (anim) anim.playbackRate = rate;
+      if (Math.abs(rate - 1) < 0.01 && Math.abs(target - 1) < 0.01) {
+        if (anim) anim.playbackRate = 1;
+        raf = 0;
+        return;
+      }
+      raf = requestAnimationFrame(loop);
+    };
     const onScroll = () => {
       const now = performance.now();
       const v = Math.abs(window.scrollY - lastY) / Math.max(1, now - lastT); // px/ms
       lastY = window.scrollY;
       lastT = now;
+      if (!visible) return;
       target = 1 + Math.min(5, v * 2.5);
+      if (!raf) raf = requestAnimationFrame(loop);
     };
-    const loop = () => {
-      target += (1 - target) * 0.04; // retour au calme
-      rate += (target - rate) * 0.12;
-      for (const a of el.getAnimations()) a.playbackRate = rate;
-      raf = requestAnimationFrame(loop);
-    };
+    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
+    io.observe(el);
     window.addEventListener("scroll", onScroll, { passive: true });
-    raf = requestAnimationFrame(loop);
     return () => {
+      io.disconnect();
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
     };

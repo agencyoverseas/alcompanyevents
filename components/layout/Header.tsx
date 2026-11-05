@@ -2,7 +2,7 @@
 
 import { AnimatePresence, m } from "motion/react";
 import { Menu, Phone, X } from "lucide-react";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { site, telHref } from "@/content/site";
 import { ButtonLink } from "@/components/ui/Button";
@@ -19,13 +19,20 @@ export function Header() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const raf = requestAnimationFrame(onScroll); // état initial (page rechargée en milieu de scroll)
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
-  // Ferme le menu à chaque navigation.
-  useLayoutEffect(() => setOpen(false), [pathname]);
+  // Ferme le menu à chaque navigation (motif « état précédent », sans effet).
+  const [prevPath, setPrevPath] = useState(pathname);
+  if (prevPath !== pathname) {
+    setPrevPath(pathname);
+    setOpen(false);
+  }
 
   useEffect(() => {
     if (!open) return;

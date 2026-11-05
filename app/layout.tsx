@@ -16,9 +16,20 @@ import "./globals.css";
 const display = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
-  style: ["normal", "italic"],
+  style: ["normal"],
   display: "swap",
   variable: "--font-display",
+});
+
+// Italique : uniquement dans des titres sous la ligne de flottaison → pas de
+// préchargement, pour libérer la bande passante du LCP mobile.
+const displayItalic = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["italic"],
+  display: "swap",
+  preload: false,
+  variable: "--font-display-italic",
 });
 
 const body = Manrope({
@@ -58,7 +69,7 @@ const bootScript = `(function(){var d=document.documentElement;try{if(location.p
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${display.variable} ${body.variable}`} suppressHydrationWarning>
+    <html lang="fr" className={`${display.variable} ${displayItalic.variable} ${body.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script

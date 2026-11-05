@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Audrey.L Company — site immersif 3D
 
-## Getting Started
+Next.js 16 (App Router, TypeScript) · Tailwind CSS 4 · three.js + React Three Fiber + drei ·
+GSAP + ScrollTrigger · Motion · Lenis · base shadcn/ui (cn + cva, tokens réhabillés).
 
-First, run the development server:
+## Démarrer
 
 ```bash
+npm install
+cp .env.example .env.local   # renseigner DEVIS_WEBHOOK_URL
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+npm run build && npm start
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Ce qui est livré
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Accueil** : héro WebGL (personnage déplacé par carte de profondeur, 8 ballons procéduraux,
+  ficelles, caméra pilotée par le scroll et la souris), pin GSAP sur trois hauteurs d'écran,
+  loader avec rideau ; univers en cartes inclinables ; réalisations en scroll horizontal ;
+  déroulé ; avis ; bandeau clients ; formulaire de devis.
+- **Formules** : 4 familles × 3 paliers, modale de détail, comparatif à colonne figée,
+  mariage à part, compléments, services, mini-concepts.
+- **Réalisations** : carrousel en anneau (scroll, glissement, boutons clavier), galerie
+  immersive filtrable.
+- Transition « ballon » entre pages, curseur personnalisé, son (coupé par défaut).
 
-## Learn More
+## Règles d'architecture
 
-To learn more about Next.js, take a look at the following resources:
+| Contexte | WebGL | GSAP | Lenis | Curseur |
+|---|---|---|---|---|
+| ≥ 768px + souris + mouvement normal | oui | oui | > 1024px | oui |
+| Mobile / tactile | non (image fixe) | non chargé | non | non |
+| `prefers-reduced-motion` | non | pas de pin | non | non |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- three.js et GSAP ne sont chargés qu'en `next/dynamic` côté bureau : vérifié, aucun des deux
+  n'est téléchargé sur mobile.
+- La séquence d'entrée du héro est en CSS : le héro reste lisible sans JavaScript.
+- Variantes Motion : `lib/motion.ts`. Réglages de scroll : `lib/gsap.ts`. Requêtes média :
+  `lib/queries.ts`. Données : `content/*.ts`.
+- `cacheComponents` est désactivé volontairement : avec `<Activity>`, les pages quittées
+  restent montées, ce qui garderait des contextes WebGL et des pins GSAP actifs hors écran.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## À fournir / valider par la cliente
 
-## Deploy on Vercel
+Tout est isolé dans `content/` et signalé par `⚠️` dans le code.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Assets** : `public/scene/*` sont des placeholders (voir `public/scene/README.md`).
+- **Prix** (`content/formules.ts`, `content/univers.ts`) : non validés.
+- **Email** et **nombre d'événements** (`content/site.ts`) : `null`, non affichés tant que non validés.
+- **Avis clients** (`content/avis.ts`) : emplacements, aucun avis n'a été fourni.
+- **Communes** des réalisations (`content/realisations.ts`) : non fournies, « Guadeloupe » affiché
+  par défaut. À compléter pour le référencement local.
+- **Classement** des photos « arbre de Noël » (entreprise) et « autre / prestations »
+  (scénographie) : déduit des noms de fichiers.
+- **Logos clients** : affichés en texte (aucun fichier logo fourni).
+- **Mariage** : traité en section dédiée sur /formules (le périmètre est de 3 pages).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Formulaire de devis
+
+`POST /api/devis` valide les champs puis transmet le JSON à `DEVIS_WEBHOOK_URL`
+(ex. n8n : email à Audrey + ligne dans une base). Sans webhook, réponse 503 et le formulaire
+propose WhatsApp. L'envoi fonctionne aussi sans JavaScript (POST natif puis redirection) ; dans
+ce cas la case « pas de date » ne libère pas le champ date (il faut JS pour ça).
+Pré-remplissage : `/?type=Anniversaire%20enfant&formule=Signature#devis`.
+
+## Déploiement Vercel
+
+Importer le dépôt, ajouter `DEVIS_WEBHOOK_URL` dans les variables d'environnement, déployer.
+Les photos sont servies depuis `alcompanyevents.fr/wp-content/uploads/` (autorisé dans
+`next.config.ts`) : si l'ancien WordPress est coupé, il faudra les rapatrier dans `public/`.

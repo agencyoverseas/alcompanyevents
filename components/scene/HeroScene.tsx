@@ -9,6 +9,7 @@ import { Balloons } from "./Balloons";
 import { CameraRig } from "./CameraRig";
 import { Character } from "./Character";
 import { Lights } from "./Lights";
+import { NAVIGATE_EVENT } from "@/components/layout/PageTransition";
 import { sceneState } from "./store";
 
 type Props = {
@@ -27,6 +28,14 @@ const setScene = (v: string) => document.documentElement.setAttribute("data-scen
  */
 export default function HeroScene({ sectionRef, copyRef, cueRef, teaserRef, onProgress }: Props) {
   const [visible, setVisible] = useState(true);
+  const [leaving, setLeaving] = useState(false);
+
+  // Transition de page : l'écran va être couvert, on libère le GPU.
+  useEffect(() => {
+    const onNav = () => setLeaving(true);
+    window.addEventListener(NAVIGATE_EVENT, onNav);
+    return () => window.removeEventListener(NAVIGATE_EVENT, onNav);
+  }, []);
 
   // Pin sur trois hauteurs d'écran ; la timeline lissée pilote la scène.
   useGSAP(
@@ -86,7 +95,7 @@ export default function HeroScene({ sectionRef, copyRef, cueRef, teaserRef, onPr
     <div className="absolute inset-0" data-cursor="view" aria-hidden>
       <SceneErrorBoundary>
         <Canvas
-          frameloop={visible ? "always" : "never"}
+          frameloop={visible && !leaving ? "always" : "never"}
           dpr={[1, 1.75]}
           camera={{ fov: 35, position: [0, 0, SCROLL.hero.camera.zFrom], near: 0.1, far: 50 }}
           gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}

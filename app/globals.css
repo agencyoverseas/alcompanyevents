@@ -115,6 +115,13 @@ html.has-cursor * {
   font-family: var(--font-body), sans-serif;
 }
 
+/* L'italique de Cormorant est une famille à part (chargée sans préchargement). */
+:where(.font-display, .h1-display, .h2-display) :where(em, i),
+.font-display.italic {
+  font-family: var(--font-display-italic), var(--font-display), serif;
+  font-style: italic;
+}
+
 @utility h1-display {
   font-family: var(--font-display), serif;
   font-size: clamp(2.6rem, 6.4vw, 4.6rem);
