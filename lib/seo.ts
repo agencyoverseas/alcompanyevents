@@ -22,7 +22,7 @@ export function pageMetadata({
       siteName: site.name,
       locale: "fr_FR",
       type: "website",
-      images: [{ url: "/scene/mascot.png", width: 900, height: 1400, alt: site.name }],
+      images: [{ url: "/og.jpg", width: 1200, height: 630, alt: `${site.name} — décoration et organisation d'événements en Guadeloupe` }],
     },
   };
 }
@@ -38,7 +38,7 @@ export function localBusinessJsonLd() {
     telephone: site.phone,
     ...(site.email ? { email: site.email } : {}),
     foundingDate: site.founded,
-    image: `${site.url}/scene/mascot.png`,
+    image: `${site.url}/scene/mascot.webp`,
     logo: `${site.url}/scene/logo-gold.png`,
     address: { "@type": "PostalAddress", addressRegion: "Guadeloupe", addressCountry: "GP" },
     areaServed: site.areaServed.map((name) => ({ "@type": "Place", name })),

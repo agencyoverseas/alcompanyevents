@@ -24,7 +24,7 @@ const BASE_Z = SCROLL.hero.camera.zFrom;
  */
 export function Character({ hand }: { hand: Vector3 }) {
   const gl = useThree((s) => s.gl);
-  const [map, depth] = useTexture(["/scene/character.png", "/scene/character-depth.png"], (textures) => {
+  const [map, depth] = useTexture(["/scene/character.webp", "/scene/character-depth.webp"], (textures) => {
     const [m] = Array.isArray(textures) ? textures : [textures];
     m.colorSpace = SRGBColorSpace;
     m.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());

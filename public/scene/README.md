@@ -1,21 +1,17 @@
 # Assets de la scène
 
-Les fichiers de ce dossier sont des PLACEHOLDERS générés. Ils doivent être remplacés par
-les vrais fichiers fournis par la cliente, avec exactement les mêmes noms :
+Source : mascotte détourée fournie (`mascot-original.png`, 1856×2304, fond transparent).
 
-| Fichier | Rôle |
-|---|---|
-| `character.png` | Audrey + fauteuil, ballons retirés, tenant les ficelles (plan 3D) |
-| `character-depth.png` | Carte de profondeur du personnage (niveaux de gris) |
-| `balloons.png`, `balloons-depth.png` | Grappe seule (non utilisée en 3D : les ballons sont des sphères) |
-| `mascot.png` | Mascotte complète (héro mobile, image OpenGraph) |
-| `mascot-depth.png` | Carte de profondeur de l'ensemble |
-| `logo-gold.png`, `logo-cream.png` | Logos |
-| `mascot-original.png` | Original pleine résolution |
+| Fichier | Rôle | Origine |
+|---|---|---|
+| `mascot-original.png` | Original fourni | cliente |
+| `mascot.png` | Original recadré sur son contenu | généré |
+| `mascot.webp` | Héro mobile / sans 3D (servi via next/image) | généré |
+| `character.png` / `character.webp` | Audrey sans les ballons, tenant les ficelles (plan 3D, version .webp chargée) | généré : ballons effacés au-dessus du poing |
+| `character-depth.png` / `.webp` | Carte de profondeur (dôme de silhouette 80 % + luminance 20 %) | généré |
+| `balloons.png`, `balloons-depth.png`, `mascot-depth.png` | Références, non utilisées en 3D | généré |
+| `logo-gold.png`, `logo-cream.png` | **PLACEHOLDERS** : logo réel non fourni | à remplacer |
 
-Après remplacement, recaler dans `components/scene/store.ts` :
-- `HAND_UV` : position de la main qui tient les ficelles (coordonnées UV de character.png) ;
-- `CHARACTER.height / y / xFactor` si le cadrage diffère ;
-- `CHARACTER.displacementScale` (rester < 0.35, vérifier que les cheveux ne se creusent pas).
-
-Et dans `components/layout/Logo.tsx` : `LOGO_RATIO` si le format du logo diffère.
+Réglages dans `components/scene/store.ts` : `HAND_UV` (poing mesuré à u 0,3515 / v 0,2769),
+`CHARACTER.height / y / xFactor`, `displacementScale` (< 0.35).
+Grappe 3D : `CLUSTER_X` / `CLUSTER_Y` dans `components/scene/Balloons.tsx`.

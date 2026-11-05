@@ -19,12 +19,12 @@ export function MobileHero() {
         />
         <div className="hero-seq seq-rise relative h-full w-full" style={{ ["--d" as string]: `${S.chair}s` }}>
           <Image
-            src="/scene/mascot.png"
+            src="/scene/mascot.webp"
             alt="Audrey, en personnage 3D, assise dans son fauteuil moutarde avec une grappe de ballons"
             fill
             preload
             fetchPriority="high"
-            sizes="(max-width: 767px) 92vw, 50vw"
+            sizes="(max-width: 767px) 240px, 45vw"
             className="object-contain object-bottom md:object-center"
           />
         </div>

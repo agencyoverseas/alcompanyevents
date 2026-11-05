@@ -48,8 +48,12 @@ const BALLOONS: Spec[] = [
   { tone: "sable", off: [0.12, 1.34, 0.0], r: 0.2, speed: 0.9, delay: 0.65, amp: 0.2, freq: 1.1, ph: 2.7, drift: 0.05 },
 ];
 
+/** Décalage horizontal de la grappe : la main est à gauche du personnage,
+ *  la grappe part vers l'extérieur pour ne pas couvrir le visage. */
+const CLUSTER_X = -0.32;
+
 /** Compression verticale de la grappe (garde le haut sous le header). */
-const CLUSTER_Y = 0.85;
+const CLUSTER_Y = 0.62;
 
 /** Hauteur à parcourir pour sortir par le haut, même caméra avancée. */
 const EXIT_RISE = 4.6;
@@ -100,7 +104,7 @@ export function Balloons({ hand }: { hand: Vector3 }) {
       const bobY = Math.sin(time * 1.1 + i * 1.7) * 0.025;
       const bobX = Math.cos(time * 0.8 + i) * 0.015;
 
-      const x = hand.x + b.off[0] + wind + b.drift * rise + bobX;
+      const x = hand.x + b.off[0] + CLUSTER_X + wind + b.drift * rise + bobX;
       const y = hand.y + b.off[1] * CLUSTER_Y + lift + bobY;
       const z = hand.z + b.off[2];
       g.position.set(x, y, z);
@@ -110,7 +114,7 @@ export function Balloons({ hand }: { hand: Vector3 }) {
       // Ficelle : du nœud du ballon vers la main, se détend puis se détache.
       const release = clamp01((p - (0.24 + b.delay * 0.18)) / 0.2);
       tmp.top.set(x, y - b.r * 1.18 * appear, z);
-      const restLen = Math.hypot(b.off[0], b.off[1] * CLUSTER_Y, b.off[2]) - b.r;
+      const restLen = Math.hypot(b.off[0] + CLUSTER_X, b.off[1] * CLUSTER_Y, b.off[2]) - b.r;
       tmp.dangle.set(
         x - Math.sin(time * 1.3 + i) * 0.08 - wind * 0.4,
         y - b.r - restLen * 0.55,

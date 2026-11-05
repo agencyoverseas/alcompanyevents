@@ -16,14 +16,14 @@ export const introTime = (elapsed: number) =>
 
 export const SEQ = HERO_SEQUENCE;
 
-// ⚠️ À RECALER sur la vraie image character.png : position de la main qui tient les
-// ficelles, en coordonnées UV (0,0 = coin haut-gauche de l'image).
-export const HAND_UV = { u: 560 / 900, v: 300 / 1100 };
+// Position du poing qui tient les ficelles dans character.webp, en UV
+// (0,0 = coin haut-gauche). Mesurée sur la mascotte fournie (voir public/scene/README.md).
+export const HAND_UV = { u: 0.3515, v: 0.2769 };
 
 export const CHARACTER = {
   /** Hauteur du plan en unités monde (caméra à z=5, fov 35 → ~3,15 visibles). */
-  height: 1.8,
-  y: -0.62,
+  height: 2.3,
+  y: -0.42,
   /** Décalage horizontal en fraction de la largeur visible. */
   xFactor: 0.23,
   /** < 0.35 impératif (cheveux sombres qui se creusent au-delà). */
