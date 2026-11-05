@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import type { DevisPayload } from "@/content/devis";
 
-// Les demandes sont transmises au webhook DEVIS_WEBHOOK_URL (ex. un workflow n8n
-// qui envoie l'email / crée la fiche). Sans webhook configuré, on renvoie une
-// erreur explicite : jamais de faux « envoyé » qui ferait perdre une demande.
+// Les demandes sont transmises au webhook DEVIS_WEBHOOK_URL (workflow n8n
+// « Audrey.L Company — Demandes de devis du site »), avec l'en-tête x-devis-secret
+// = DEVIS_WEBHOOK_SECRET. Sans webhook configuré, on renvoie une erreur explicite :
+// jamais de faux « envoyé » qui ferait perdre une demande.
 
 const MAX = 2000;
 const clip = (v: unknown, n = 200) => (typeof v === "string" ? v.trim().slice(0, n) : "");
@@ -38,7 +39,11 @@ async function forward(payload: DevisPayload) {
   try {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // Secret partagé avec le workflow n8n (nœud « Secret du site valide ? »).
+        ...(process.env.DEVIS_WEBHOOK_SECRET ? { "x-devis-secret": process.env.DEVIS_WEBHOOK_SECRET } : {}),
+      },
       body: JSON.stringify({ ...payload, source: "site", receivedAt: new Date().toISOString() }),
       signal: AbortSignal.timeout(8000),
     });
