@@ -22,10 +22,16 @@ Découpée dans `character.png` (coordonnées dans `components/scene/store.ts`, 
 
 | Fichier | Pièce |
 |---|---|
-| `character-body.webp` | Corps fixe (sans tête ni avant-bras ; le cou reste pour éviter un trou au pivot) |
+| `character-body.webp` | Corps fixe (sans tête ni bras ; le cou et une bande de veste le long de la manche restent pour éviter un trou) |
 | `character-head.webp` | Tête, yeux « vides » (blanc de l'œil redessiné sous l'iris) |
 | `character-irises.webp` + `character-eyemask.webp` | Iris décalés dans le shader, limités à l'ouverture de l'œil |
-| `character-forearm.webp` | Avant-bras + main, pivot au coude caché dans la manchette |
+| `character-sleeve.webp` | Manche (bras + manchette), pivot à l'épaule : tout le bras bouge |
+| `character-forearm.webp` | Avant-bras + main (prolongé dans la manchette), pivot au coude caché dans la manche |
+| `character-cuff.webp` | Ombre de l'intérieur de la manchette, visible quand l'avant-bras s'abaisse |
 | `character-strings.webp` | Ficelles tenues dans le poing, lâchées avec les ballons |
 
 Si l'illustration change, régénérer ces fichiers (repérer à nouveau iris, cou, coude).
+
+Pose de repos vérifiée au pixel près (corps + manchette + avant-bras + manche = image d'origine).
+La manche déborde de 2 px sur le corps (pas de liseré au filtrage) et utilise la même grille
+que le corps (déformation de profondeur identique).

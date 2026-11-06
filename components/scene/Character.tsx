@@ -27,7 +27,11 @@ const TEXTURES = [
   "/scene/character-irises.webp",
   "/scene/character-eyemask.webp",
   "/scene/character-depth.webp",
+  "/scene/character-sleeve.webp",
+  "/scene/character-cuff.webp",
 ];
+/** Index des textures de données (pas de conversion sRGB). */
+const LINEAR = new Set([5, 6]);
 
 type ShaderLike = { uniforms: Record<string, unknown>; fragmentShader: string };
 
@@ -40,15 +44,19 @@ type ShaderLike = { uniforms: Record<string, unknown>; fragmentShader: string };
  */
 export function Character({ hand }: { hand: Vector3 }) {
   const gl = useThree((s) => s.gl);
-  const [bodyMap, headMap, armMap, stringsMap, irisMap, eyeMask, depth] = useTexture(TEXTURES, (textures) => {
-    const list = Array.isArray(textures) ? textures : [textures];
-    // Couleurs en sRGB ; le masque et la profondeur restent des données linéaires.
-    for (const t of list.slice(0, 5)) {
-      t.colorSpace = SRGBColorSpace;
-      t.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());
-      t.needsUpdate = true;
-    }
-  });
+  const [bodyMap, headMap, armMap, stringsMap, irisMap, eyeMask, depth, sleeveMap, cuffMap] = useTexture(
+    TEXTURES,
+    (textures) => {
+      const list = Array.isArray(textures) ? textures : [textures];
+      // Couleurs en sRGB ; le masque et la profondeur restent des données linéaires.
+      for (const [i, t] of list.entries()) {
+        if (LINEAR.has(i)) continue;
+        t.colorSpace = SRGBColorSpace;
+        t.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());
+        t.needsUpdate = true;
+      }
+    },
+  );
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
 
@@ -76,6 +84,7 @@ export function Character({ hand }: { hand: Vector3 }) {
   // Pixel du personnage (character.png) → coordonnées locales du plan.
   const headPivot = useMemo(() => toLocal(RIG.headPivot, w, h), [w, h]);
   const elbow = useMemo(() => toLocal(RIG.elbow, w, h), [w, h]);
+  const shoulder = useMemo(() => toLocal(RIG.shoulder, w, h), [w, h]);
 
   // Largeur visible au plan z=0 depuis la position de départ de la caméra.
   const fov = "fov" in camera ? (camera as { fov: number }).fov : 35;
@@ -95,7 +104,11 @@ export function Character({ hand }: { hand: Vector3 }) {
 
   // Iris injectés dans le matériau de la tête : décalés par un uniform, limités au masque.
   const irisUniforms = useMemo(
-    () => ({ irisMap: { value: irisMap }, eyeMask: { value: eyeMask }, irisOffset: { value: new Vector2() } }),
+    () => ({
+      irisMap: { value: irisMap },
+      eyeMask: { value: eyeMask },
+      irisOffset: { value: new Vector2() },
+    }),
     [irisMap, eyeMask],
   );
   const onHeadCompile = useMemo(
@@ -120,6 +133,9 @@ export function Character({ hand }: { hand: Vector3 }) {
   const group = useRef<Group>(null);
   const headGroup = useRef<Group>(null);
   const armGroup = useRef<Group>(null);
+  const shoulderGroup = useRef<Group>(null);
+  const sleeveMat = useRef<MeshStandardMaterial>(null);
+  const cuffMat = useRef<MeshStandardMaterial>(null);
   const armMat = useRef<MeshStandardMaterial>(null);
   const bodyMat = useRef<MeshStandardMaterial>(null);
   const headMat = useRef<MeshStandardMaterial>(null);
@@ -128,13 +144,14 @@ export function Character({ hand }: { hand: Vector3 }) {
 
   useFrame((state) => {
     const g = group.current;
-    if (!g || !headGroup.current || !armGroup.current) return;
+    if (!g || !headGroup.current || !armGroup.current || !shoulderGroup.current) return;
     const t = introTime(state.clock.elapsedTime);
     // Entrée : arrivée depuis le bas avec léger dépassement, puis fondu.
     const rise = t < 0 ? 0 : easeOutBack(clamp01((t - SEQ.chair) / 0.75), 1.2);
     const fade = t < 0 ? 0 : easeOutCubic(clamp01((t - SEQ.chair) / 0.6));
     const settle = t < 0 ? 0 : easeOutCubic(clamp01((t - SEQ.character) / 0.5));
-    for (const m of [armMat.current, bodyMat.current, headMat.current]) if (m) m.opacity = fade;
+    for (const m of [armMat.current, bodyMat.current, headMat.current, sleeveMat.current, cuffMat.current])
+      if (m) m.opacity = fade;
 
     const p = sceneState.progress;
     const cam = phase(p, SCROLL.hero.phases.camera);
@@ -158,17 +175,22 @@ export function Character({ hand }: { hand: Vector3 }) {
     // Lâcher : les ficelles du poing partent avec les ballons, puis le bras redescend.
     const release = phase(p, RIG.stringsRelease);
     if (stringsMat.current) stringsMat.current.opacity = fade * (1 - release);
-    const angle = phase(p, RIG.armLower) * RIG.armAngle;
-    armGroup.current.rotation.z = angle;
+    const lower = phase(p, RIG.armLower);
+    const sa = lower * RIG.shoulderAngle;
+    const fa = lower * RIG.armAngle;
+    shoulderGroup.current.rotation.z = sa;
+    armGroup.current.rotation.z = fa;
 
-    // Main (pour accrocher les ficelles 3D) : tournée autour du coude avec l'avant-bras.
-    const c = Math.cos(angle);
-    const s = Math.sin(angle);
-    const hx = handLocal.x - elbow.x;
-    const hy = handLocal.y - elbow.y;
+    // Main (pour accrocher les ficelles 3D) : avant-bras autour du coude, puis bras à l'épaule.
+    let hx = handLocal.x - elbow.x;
+    let hy = handLocal.y - elbow.y;
+    [hx, hy] = [hx * Math.cos(fa) - hy * Math.sin(fa), hx * Math.sin(fa) + hy * Math.cos(fa)];
+    hx += elbow.x - shoulder.x;
+    hy += elbow.y - shoulder.y;
+    [hx, hy] = [hx * Math.cos(sa) - hy * Math.sin(sa), hx * Math.sin(sa) + hy * Math.cos(sa)];
     hand.set(
-      g.position.x + (elbow.x + hx * c - hy * s) * grow,
-      g.position.y + (elbow.y + hx * s + hy * c) * grow,
+      g.position.x + (shoulder.x + hx) * grow,
+      g.position.y + (shoulder.y + hy) * grow,
       g.position.z + handLocal.z,
     );
   });
@@ -192,24 +214,36 @@ export function Character({ hand }: { hand: Vector3 }) {
 
   return (
     <group ref={group} position={[x, CHARACTER.y - 1.6, 0]}>
-      {/* Avant-bras, derrière le corps : la manchette le recouvre au coude */}
-      <group ref={armGroup} position={[elbow.x, elbow.y, 0]}>
-        <group position={[-elbow.x, -elbow.y, 0]}>
-          <mesh geometry={armGeometry} renderOrder={1}>
-            {material(armMap, armMat)}
+      <mesh geometry={geometry} renderOrder={1}>
+        {material(bodyMap, bodyMat)}
+      </mesh>
+      {/* Bras entier, pivot à l'épaule. Manche et manchette sur la grille du corps
+          (déformation de profondeur identique au pixel près, pas de liseré). Ordre : intérieur de la manchette, avant-bras
+          (pivot au coude, caché dans la manchette), puis la manche par-dessus. */}
+      <group ref={shoulderGroup} position={[shoulder.x, shoulder.y, 0]}>
+        <group position={[-shoulder.x, -shoulder.y, 0]}>
+          <mesh geometry={geometry} renderOrder={2}>
+            {material(cuffMap, cuffMat)}
           </mesh>
-          <mesh geometry={armGeometry} renderOrder={3}>
-            {material(stringsMap, stringsMat)}
+          <group ref={armGroup} position={[elbow.x, elbow.y, 0]}>
+            <group position={[-elbow.x, -elbow.y, 0]}>
+              <mesh geometry={armGeometry} renderOrder={3}>
+                {material(armMap, armMat)}
+              </mesh>
+              <mesh geometry={armGeometry} renderOrder={5}>
+                {material(stringsMap, stringsMat)}
+              </mesh>
+            </group>
+          </group>
+          <mesh geometry={geometry} renderOrder={4}>
+            {material(sleeveMap, sleeveMat)}
           </mesh>
         </group>
       </group>
-      <mesh geometry={geometry} renderOrder={2}>
-        {material(bodyMap, bodyMat)}
-      </mesh>
       {/* Tête : pivote autour du cou */}
       <group ref={headGroup} position={[headPivot.x, headPivot.y, 0]}>
         <group position={[-headPivot.x, -headPivot.y, 0]}>
-          <mesh geometry={headGeometry} renderOrder={4}>
+          <mesh geometry={headGeometry} renderOrder={6}>
             {material(headMap, headMat, true)}
           </mesh>
         </group>
@@ -239,7 +273,10 @@ function toLocal([px, py]: readonly [number, number], w: number, h: number) {
 /** Copie floutée de la carte de profondeur (canvas 2D). Sans support de ctx.filter,
  *  on garde la carte d'origine. */
 function blurDepth(depth: Texture): Texture {
-  const src = depth.image as CanvasImageSource & { width: number; height: number };
+  const src = depth.image as CanvasImageSource & {
+    width: number;
+    height: number;
+  };
   const canvas = document.createElement("canvas");
   const scale = Math.min(1, 1024 / src.width);
   canvas.width = Math.round(src.width * scale);
@@ -257,7 +294,10 @@ function blurDepth(depth: Texture): Texture {
 
 /** Valeur (0–1) de la carte de profondeur en (u, v), v mesuré depuis le haut de l'image. */
 function sampleDepth(tex: Texture, u: number, v: number): number {
-  const src = tex.image as CanvasImageSource & { width: number; height: number };
+  const src = tex.image as CanvasImageSource & {
+    width: number;
+    height: number;
+  };
   const c = document.createElement("canvas");
   c.width = c.height = 1;
   const ctx = c.getContext("2d", { willReadFrequently: true });

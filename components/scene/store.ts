@@ -11,8 +11,7 @@ export const sceneState = {
 };
 
 /** Temps écoulé depuis le début de la séquence d'entrée (s), ou -1. */
-export const introTime = (elapsed: number) =>
-  sceneState.introStart < 0 ? -1 : elapsed - sceneState.introStart;
+export const introTime = (elapsed: number) => (sceneState.introStart < 0 ? -1 : elapsed - sceneState.introStart);
 
 export const SEQ = HERO_SEQUENCE;
 
@@ -54,6 +53,8 @@ export const RIG = {
   /** Rectangles utiles (x0, y0, x1, y1) : tête + cou, avant-bras + ficelles du poing. */
   headRect: [720, 0, 1286, 472] as const,
   armRect: [376, 436, 632, 862] as const,
+  /** Bras entier : la manche (bras + manchette) pivote à l'épaule, l'avant-bras au coude. */
+  shoulder: [686, 536] as const,
   /** Course maximale des iris (px) en x / y, et inclinaison de la tête (rad). */
   irisRange: [7, 5] as const,
   headTilt: 0.05,
@@ -64,8 +65,10 @@ export const RIG = {
   balloonGaze: [-0.6, 1] as const,
   lookAtBalloons: [0.15, 0.5] as const,
   lookBack: [0.82, 1] as const,
-  /** Ficelles du poing lâchées avec les premiers ballons, puis le bras redescend vers l'accoudoir (≈ 66°). */
+  /** Ficelles du poing lâchées avec les premiers ballons, puis tout le bras redescend :
+   *  l'épaule rentre le coude contre le buste (≈ 15°), l'avant-bras se pose sur le genou (≈ 80°). */
   stringsRelease: [0.24, 0.42] as const,
   armLower: [0.42, 0.72] as const,
-  armAngle: 1.15,
+  shoulderAngle: 0.26,
+  armAngle: 1.4,
 };
