@@ -6,7 +6,6 @@ import { QUERIES } from "@/lib/queries";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
-import { Cursor } from "@/components/layout/Cursor";
 import { PageTransitionProvider } from "@/components/layout/PageTransition";
 import { MotionProvider } from "@/components/providers/MotionProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
@@ -73,7 +72,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <main id="contenu">{children}</main>
               <Footer />
               <WhatsAppFab />
-              <Cursor />
               <SmoothScroll />
             </PageTransitionProvider>
           </SoundProvider>

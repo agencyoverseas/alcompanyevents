@@ -117,12 +117,6 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* Curseur personnalisé : on masque le curseur natif uniquement quand il est actif */
-html.has-cursor,
-html.has-cursor * {
-  cursor: none !important;
-}
-
 /* ------------------------- Typographie ------------------------- */
 /* --font-display (Fraunces) / --font-body (Inter) posées par next/font sur <html> */
 @utility font-display {
