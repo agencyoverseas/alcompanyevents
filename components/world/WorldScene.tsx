@@ -47,11 +47,16 @@ const smooth = (x: number) => x * x * (3 - 2 * x);
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
 type Capture = { t?: number };
-const capture = (): Capture | null =>
-  typeof window !== "undefined" &&
-  new URLSearchParams(window.location.search).has("capture")
+// ?capture : pas de lissage, horloge pilotable (enregistrement vidéo image par image).
+let captureState: Capture | null | undefined;
+const capture = (): Capture | null => {
+  if (captureState !== undefined) return captureState;
+  if (typeof window === "undefined") return null;
+  captureState = new URLSearchParams(window.location.search).has("capture")
     ? ((window as unknown as { __world: Capture }).__world ??= {})
     : null;
+  return captureState;
+};
 
 export default function WorldScene() {
   const [active, setActive] = useState(false);
