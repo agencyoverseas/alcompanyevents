@@ -386,3 +386,26 @@ html.hero-pinned .rail-sheet {
   border-radius: 34px;
   box-shadow: 0 -24px 60px -20px rgba(16, 31, 43, 0.35);
 }
+
+/* ===================== Monde 3D de l'accueil (bureau) =====================
+   world-on est posé par WorldLayer quand la 3D est autorisée. Le calque WebGL
+   est en z négatif : les sections (feuilles) le couvrent, les intermèdes
+   transparents l'ouvrent. Sans world-on, la page reste la version classique. */
+.world-only {
+  display: none;
+}
+html.world-on .world-only {
+  display: block;
+  height: 135svh;
+}
+html.world-on body {
+  background: transparent;
+}
+html.world-on .world-sheet {
+  margin-inline: auto;
+  width: min(1240px, calc(100% - 44px));
+  border-radius: 34px;
+  overflow: clip;
+  background: var(--paper);
+  box-shadow: 0 30px 80px -30px rgba(16, 31, 43, 0.4);
+}
