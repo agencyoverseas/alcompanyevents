@@ -69,6 +69,8 @@ export const RIG = {
    *  l'épaule rentre le coude contre le buste (≈ 15°), l'avant-bras se pose sur le genou (≈ 80°). */
   stringsRelease: [0.24, 0.42] as const,
   armLower: [0.42, 0.72] as const,
-  shoulderAngle: 0.26,
-  armAngle: 1.4,
+  /** Bras fixe, comme l'illustration d'origine (choix de la cliente) : angles à 0.
+   *  Le rig épaule + coude reste prêt si l'on veut le réactiver (0.26 / 1.4). */
+  shoulderAngle: 0,
+  armAngle: 0,
 };
