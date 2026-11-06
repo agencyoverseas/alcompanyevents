@@ -2,7 +2,15 @@
 
 import { useProgress } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
-import { Component, Suspense, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import {
+  Component,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import { Vector3 } from "three";
 import { gsap, rescrollToHash, SCROLL, useGSAP } from "@/lib/gsap";
 import { Balloons } from "./Balloons";
@@ -16,17 +24,26 @@ type Props = {
   sectionRef: RefObject<HTMLElement | null>;
   copyRef: RefObject<HTMLDivElement | null>;
   cueRef: RefObject<HTMLDivElement | null>;
-  teaserRef: RefObject<HTMLDivElement | null>;
+  cardRef: RefObject<HTMLDivElement | null>;
+  dimRef: RefObject<HTMLDivElement | null>;
   onProgress: (p: number) => void;
 };
 
-const setScene = (v: string) => document.documentElement.setAttribute("data-scene", v);
+const setScene = (v: string) =>
+  document.documentElement.setAttribute("data-scene", v);
 
 /**
  * Scène WebGL du héro + pin GSAP. Module chargé en next/dynamic (ssr: false),
  * uniquement sur bureau : three.js n'apparaît jamais dans le bundle mobile.
  */
-export default function HeroScene({ sectionRef, copyRef, cueRef, teaserRef, onProgress }: Props) {
+export default function HeroScene({
+  sectionRef,
+  copyRef,
+  cueRef,
+  cardRef,
+  dimRef,
+  onProgress,
+}: Props) {
   const [visible, setVisible] = useState(true);
   const [leaving, setLeaving] = useState(false);
 
@@ -52,14 +69,36 @@ export default function HeroScene({ sectionRef, copyRef, cueRef, teaserRef, onPr
           invalidateOnRefresh: true,
         },
         onUpdate: () => {
-          sceneState.progress = tl.progress();
+          sceneState.progress = Math.min(
+            1,
+            tl.progress() / SCROLL.hero.sceneShare,
+          );
         },
       });
       tl.to({}, { duration: 1 }, 0);
       const [a, b] = SCROLL.hero.phases.textOut;
-      tl.to([copyRef.current, cueRef.current], { autoAlpha: 0, y: -70, duration: b - a }, a);
-      tl.fromTo(teaserRef.current, { yPercent: 100, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: b - a }, a);
+      tl.to(
+        [copyRef.current, cueRef.current],
+        { autoAlpha: 0, y: -70, duration: b - a },
+        a,
+      );
+      // Dernier tiers : la section suivante (marge négative) glisse par-dessus ;
+      // la carte du héro recule et s'assombrit dessous.
+      const s = SCROLL.hero.sceneShare;
+      tl.to(
+        cardRef.current,
+        { scale: 0.9, yPercent: -4, duration: 1 - s, ease: "power1.in" },
+        s,
+      );
+      tl.fromTo(
+        dimRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 1 - s },
+        s,
+      );
+      document.documentElement.classList.add("hero-pinned");
       rescrollToHash();
+      return () => document.documentElement.classList.remove("hero-pinned");
     },
     { scope: sectionRef },
   );
@@ -68,7 +107,9 @@ export default function HeroScene({ sectionRef, copyRef, cueRef, teaserRef, onPr
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { rootMargin: "100px" });
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), {
+      rootMargin: "100px",
+    });
     io.observe(el);
     return () => io.disconnect();
   }, [sectionRef]);
@@ -97,8 +138,17 @@ export default function HeroScene({ sectionRef, copyRef, cueRef, teaserRef, onPr
         <Canvas
           frameloop={visible && !leaving ? "always" : "never"}
           dpr={[1, 1.75]}
-          camera={{ fov: 35, position: [0, 0, SCROLL.hero.camera.zFrom], near: 0.1, far: 50 }}
-          gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
+          camera={{
+            fov: 35,
+            position: [0, 0, SCROLL.hero.camera.zFrom],
+            near: 0.1,
+            far: 50,
+          }}
+          gl={{
+            alpha: true,
+            antialias: true,
+            powerPreference: "high-performance",
+          }}
           onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
         >
           <Lights />
@@ -148,7 +198,10 @@ function Ready({ onProgress }: { onProgress: (p: number) => void }) {
 }
 
 /** WebGL indisponible : on retombe sur le visuel statique. */
-class SceneErrorBoundary extends Component<{ children: React.ReactNode }, { failed: boolean }> {
+class SceneErrorBoundary extends Component<
+  { children: React.ReactNode },
+  { failed: boolean }
+> {
   state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };

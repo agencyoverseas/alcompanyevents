@@ -29,10 +29,10 @@ export const PAGE_TRANSITION = {
   reducedFadeMs: 200,
 } as const;
 
-export const viewportOnce = { once: true, margin: "0px 0px -12% 0px" } as const;
+export const viewportOnce = { once: true, margin: "0px 0px 12% 0px" } as const;
 
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 18 },
   show: { opacity: 1, y: 0, transition: { duration: DURATION.base, ease: EASE_OUT } },
 };
 

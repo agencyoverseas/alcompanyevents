@@ -31,7 +31,7 @@ export function HorizontalRail() {
       ref={sectionRef}
       aria-labelledby="rail-title"
       className={cn(
-        "relative overflow-hidden bg-sand py-14 sm:py-[76px]",
+        "rail-sheet relative z-20 overflow-hidden bg-sand py-14 sm:py-[76px]",
         canPin && "md:flex md:h-[100svh] md:flex-col md:justify-center md:py-0",
       )}
     >

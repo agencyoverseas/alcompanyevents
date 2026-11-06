@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { ArrowDown, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { Fragment, useCallback, useLayoutEffect, useRef } from "react";
 import { CTA } from "@/content/nav";
 import { site, telHref } from "@/content/site";
@@ -15,9 +15,12 @@ import { useCanScene } from "@/lib/useMedia";
 
 // three.js, R3F, drei et GSAP ne sont chargés que si useCanScene() est vrai
 // (≥ 768px, pointeur fin, mouvement non réduit). Jamais dans le bundle mobile.
-const HeroScene = dynamic(() => import("@/components/scene/HeroScene"), { ssr: false });
+const HeroScene = dynamic(() => import("@/components/scene/HeroScene"), {
+  ssr: false,
+});
 
-const d = (s: number) => ({ ["--d" as string]: `${s}s` }) as React.CSSProperties;
+const d = (s: number) =>
+  ({ ["--d" as string]: `${s}s` }) as React.CSSProperties;
 
 const LINE_1 = ["Décoration", "&", "organisation"];
 const LINE_2 = ["clé", "en", "main"];
@@ -26,7 +29,8 @@ export function Hero() {
   const canScene = useCanScene();
   const sectionRef = useRef<HTMLElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
-  const teaserRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const dimRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
   const pctRef = useRef<HTMLSpanElement>(null);
@@ -36,9 +40,11 @@ export function Hero() {
   useLayoutEffect(() => {
     if (!canScene) return;
     const html = document.documentElement;
-    if (!html.hasAttribute("data-scene")) html.setAttribute("data-scene", "pending");
+    if (!html.hasAttribute("data-scene"))
+      html.setAttribute("data-scene", "pending");
     const failsafe = window.setTimeout(() => {
-      if (html.getAttribute("data-scene") === "pending") html.setAttribute("data-scene", "ready");
+      if (html.getAttribute("data-scene") === "pending")
+        html.setAttribute("data-scene", "ready");
     }, 9000);
     return () => {
       window.clearTimeout(failsafe);
@@ -76,9 +82,15 @@ export function Hero() {
         aria-labelledby="hero-title"
         className="relative bg-paper px-4 pb-6 pt-[82px] sm:px-[22px] md:h-[100svh] md:min-h-[640px] md:pb-5"
       >
-        <div className="bg-hero relative isolate mx-auto flex h-full max-w-[1180px] flex-col overflow-hidden rounded-[34px] text-white">
+        <div
+          ref={cardRef}
+          className="bg-hero relative isolate mx-auto flex h-full max-w-[1180px] flex-col overflow-hidden rounded-[34px] text-white"
+        >
           {/* Filigrane + halos (étape 1 de la séquence) */}
-          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10"
+          >
             <div
               className="hero-seq seq-fade absolute left-1/2 top-[14%] -translate-x-1/2 whitespace-nowrap font-display text-[clamp(5rem,15vw,12.5rem)] font-black uppercase leading-[.8] tracking-[-0.04em] text-white/[.11]"
               style={d(S.halos)}
@@ -93,7 +105,10 @@ export function Hero() {
               className="hero-seq seq-fade absolute -bottom-[25%] -left-[10%] h-[60%] w-[45%] rounded-full [background:radial-gradient(closest-side,rgba(194,100,62,.32),transparent)]"
               style={d(S.halos + 0.2)}
             />
-            <div className="hero-seq seq-unveil absolute inset-0 bg-sky-800" style={d(S.bgLight)} />
+            <div
+              className="hero-seq seq-unveil absolute inset-0 bg-sky-800"
+              style={d(S.bgLight)}
+            />
           </div>
 
           {canScene && (
@@ -101,7 +116,8 @@ export function Hero() {
               sectionRef={sectionRef}
               copyRef={copyRef}
               cueRef={cueRef}
-              teaserRef={teaserRef}
+              cardRef={cardRef}
+              dimRef={dimRef}
               onProgress={onProgress}
             />
           )}
@@ -113,7 +129,10 @@ export function Hero() {
             >
               <div className="hero-seq seq-fade-up" style={d(S.logo)}>
                 <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-terra-d py-[7px] pl-2 pr-4 text-[0.78rem] font-medium text-white">
-                  <span aria-hidden className="grid size-5 place-items-center rounded-full bg-white/25 text-[0.7rem]">
+                  <span
+                    aria-hidden
+                    className="grid size-5 place-items-center rounded-full bg-white/25 text-[0.7rem]"
+                  >
                     ✦
                   </span>
                   Guadeloupe &amp; îles alentours · depuis 2023
@@ -122,21 +141,31 @@ export function Hero() {
 
               <h1 id="hero-title" className="h1-display text-white">
                 <span className="block">{LINE_1.map((t) => word(t))}</span>
-                <span className="block">{LINE_2.map((t) => word(t, true))}</span>
+                <span className="block">
+                  {LINE_2.map((t) => word(t, true))}
+                </span>
               </h1>
 
               <p
                 className="hero-seq seq-fade-up mt-4 max-w-[44ch] font-display text-[clamp(1.05rem,2.1vw,1.35rem)] font-light text-white/90"
                 style={d(S.subtitle)}
               >
-                De la première idée au démontage, chaque détail vous est épargné.
+                De la première idée au démontage, chaque détail vous est
+                épargné.
               </p>
-              <p className="hero-seq seq-fade-up mt-2 max-w-[46ch] text-[0.95rem] text-white/85" style={d(S.subtitle + 0.05)}>
-                Décoration, scénographie, organisation et coordination d&apos;événements privés et professionnels en
-                Guadeloupe et dans les îles alentours.
+              <p
+                className="hero-seq seq-fade-up mt-2 max-w-[46ch] text-[0.95rem] text-white/85"
+                style={d(S.subtitle + 0.05)}
+              >
+                Décoration, scénographie, organisation et coordination
+                d&apos;événements privés et professionnels en Guadeloupe et dans
+                les îles alentours.
               </p>
 
-              <div className="hero-seq seq-fade-up mt-6 flex flex-wrap gap-2.5" style={d(S.buttons)}>
+              <div
+                className="hero-seq seq-fade-up mt-6 flex flex-wrap gap-2.5"
+                style={d(S.buttons)}
+              >
                 <ButtonLink href={CTA.href} variant="light" size="lg">
                   {CTA.main}
                 </ButtonLink>
@@ -149,10 +178,16 @@ export function Hero() {
                 className="hero-seq seq-fade mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[0.78rem] text-white/85"
                 style={d(S.buttons + 0.1)}
               >
-                <a href={telHref} className="inline-flex items-center gap-1.5 font-medium hover:text-white">
+                <a
+                  href={telHref}
+                  className="inline-flex items-center gap-1.5 font-medium hover:text-white"
+                >
                   <Phone className="size-3.5" aria-hidden /> {site.phoneDisplay}
                 </a>
-                <TransitionLink href="/formules" className="font-medium underline-offset-4 hover:underline">
+                <TransitionLink
+                  href="/formules"
+                  className="font-medium underline-offset-4 hover:underline"
+                >
                   Formules dès {formatPrice(lowestPrice)}
                 </TransitionLink>
               </div>
@@ -165,8 +200,15 @@ export function Hero() {
           </div>
 
           {/* Indicateur de scroll discret */}
-          <div ref={cueRef} aria-hidden className="absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 md:block">
-            <div className="hero-seq seq-fade flex flex-col items-center gap-2" style={d(S.cue)}>
+          <div
+            ref={cueRef}
+            aria-hidden
+            className="absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 md:block"
+          >
+            <div
+              className="hero-seq seq-fade flex flex-col items-center gap-2"
+              style={d(S.cue)}
+            >
               <span className="smallcaps text-white/75">Défiler</span>
               <span className="relative block h-9 w-px overflow-hidden bg-white/25">
                 <span className="absolute inset-x-0 top-0 h-1/3 bg-white [animation:scroll-cue_1.8s_cubic-bezier(.65,0,.35,1)_infinite]" />
@@ -174,19 +216,12 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Le bloc suivant arrive par-dessous pendant le pin (bureau + 3D uniquement) */}
-          {canScene && (
-            <div
-              ref={teaserRef}
-              aria-hidden
-              className="pointer-events-none invisible absolute inset-x-0 bottom-0 z-20 opacity-0"
-            >
-              <div className="flex items-end justify-between bg-paper px-11 py-7 text-ink">
-                <p className="h2-display">Des fêtes qu&apos;on n&apos;oublie pas</p>
-                <ArrowDown className="mb-2 size-5 text-terra-d" />
-              </div>
-            </div>
-          )}
+          {/* Voile pendant le recouvrement par la section suivante (bureau + 3D) */}
+          <div
+            ref={dimRef}
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-30 bg-ink/45 opacity-0"
+          />
         </div>
       </section>
     </>

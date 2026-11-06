@@ -377,3 +377,12 @@ html[data-scene="ready"] .scene-loader {
     }
   }
 }
+
+/* ============ Héro → Réalisations : recouvrement sans coupe ============
+   Bureau + 3D : le héro reste épinglé pendant son dernier tiers et la section
+   des réalisations, remontée d'un écran, glisse par-dessus comme une feuille. */
+html.hero-pinned .rail-sheet {
+  margin-top: -100svh;
+  border-radius: 34px;
+  box-shadow: 0 -24px 60px -20px rgba(16, 31, 43, 0.35);
+}

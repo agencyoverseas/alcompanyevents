@@ -12,15 +12,19 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 /** Réglages de scroll centralisés. */
 export const SCROLL = {
   hero: {
-    /** Pin sur trois hauteurs d'écran. */
+    /** Pin sur trois hauteurs d'écran : deux pour la scène, la dernière pendant
+     *  laquelle la section suivante glisse par-dessus le héro (aucune coupe). */
     end: "+=300%",
+    /** Part du pin consacrée à la scène 3D ; au-delà, recouvrement. */
+    sceneShare: 2 / 3,
     scrub: 0.6,
     /** Tranches de la timeline (progression 0 → 1), cf. brief §5. */
     phases: {
       stringsRelax: [0, 0.3],
       camera: [0.2, 0.7],
       balloonsRise: [0.3, 1],
-      textOut: [0.6, 1],
+      /** En unités du pin entier : le texte part avant le recouvrement. */
+      textOut: [0.38, 0.62],
     },
     camera: { zFrom: 5, zTo: 3.4 },
   },
